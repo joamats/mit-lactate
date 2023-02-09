@@ -1,3 +1,7 @@
+# Accsess credentials for BigQuery/Google Cloud
+.json
+# additional safety to prevent API credentials being pushed to GitHub
+
 # History files
 .Rhistory
 .Rapp.history
