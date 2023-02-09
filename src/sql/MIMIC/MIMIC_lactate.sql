@@ -246,14 +246,7 @@ LEFT JOIN (
 AS oa
 ON oa.stay_id = icu.stay_id
 
--- Active Cancer in the ICU
-LEFT JOIN(
-  SELECT *
-  FROM `db_name.my_MIMIC.pivoted_cancer`
-)
-AS cancer
-ON cancer.hadm_id = icu.hadm_id
-
+/*
 -- Key Comorbidities
 LEFT JOIN(
   SELECT *
@@ -269,5 +262,6 @@ LEFT JOIN(
 )
 AS codes
 ON codes.stay_id = icu.stay_id
+*/
 
 ORDER BY icu.subject_id, icu.hadm_id, icu.stay_id
