@@ -11,7 +11,9 @@ Is the relationship between lactate and mortality different across races in sept
 The following features are extracted from **MIMIC-IV and eICU-CRD.**
 
 Please see the Google Spreadsheet:
+
 https://docs.google.com/spreadsheets/d/1NYRQ-eGS3CQEKjPwsEqoLHe82ctdbPU_LBAuY_EdbfI/edit#gid=0
+
 (access restricted to team members)
 
 ### Inclusion Criteria
