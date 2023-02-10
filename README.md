@@ -10,26 +10,15 @@ Is the relationship between lactate and mortality different across races in sept
 
 The following features are extracted from **MIMIC-IV and eICU-CRD.**
 
-- Age (age)
-- Gender (sex_at_birth)
-- Race (race)
-- English proficiency (english_proficiency)
-- Lactate (lactate)
-- Outcome:
-    - In hospital mortality (in_hosp_mort)
-    - LoS (LoS)
-- Charlson CI (charlson_ci)
-- Ventilation → Duration (ventilation_duration)
-- RRI → Bin. (rri)
-- Vasopressors → Duration (vasopressors)
-- Fluids (24h) (fluids) TODO
-- Transfusion (transfusion) TODO
-    - MIN (Hb) TODO
+Please see the Google Spreadsheet:
+https://docs.google.com/spreadsheets/d/1NYRQ-eGS3CQEKjPwsEqoLHe82ctdbPU_LBAuY_EdbfI/edit#gid=0
+(access restricted to team members)
 
 ### Inclusion Criteria
 
 From the initial selection of sepsis patients patients (Sepsis-3) are filtered using the following inclusion criteria:
 
+- Sepsis-3
 - Adult (≥18 years of age)
 - Lactate value > 3
 - LoS > 24 h
