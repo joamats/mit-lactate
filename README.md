@@ -1,4 +1,44 @@
-# mit-lactate
+# Is Lactate Racist?
+
+## Experimental Design
+
+### Research Question
+
+Is the relationship between lactate and mortality different across races in septic patients? 
+
+### Data extraction
+
+The following features are extracted from **MIMIC-IV and eICU-CRD.**
+
+- Age (age)
+- Gender (sex_at_birth)
+- Race (race)
+- English proficiency (english_proficiency)
+- Lactate (lactate)
+- Outcome:
+    - In hospital mortality (in_hosp_mort)
+    - LoS (LoS)
+- Charlson CI (charlson_ci)
+- Ventilation → Duration (ventilation_duration)
+- RRI → Bin. (rri)
+- Vasopressors → Duration (vasopressors)
+- Fluids (24h) (fluids) TODO
+- Transfusion (transfusion) TODO
+    - MIN (Hb) TODO
+
+### Inclusion Criteria
+
+From the initial selection of sepsis patients patients (Sepsis-3) are filtered using the following inclusion criteria:
+
+- Adult (≥18 years of age)
+- Lactate value > 3
+- LoS > 24 h
+
+At every step monitor the following demographics to see who is being excluded:
+
+- Race
+- English prof.
+- Sex
 
 (to be organized)
 
