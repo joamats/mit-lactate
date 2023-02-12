@@ -30,8 +30,8 @@ The following features are extracted from **MIMIC-IV and eICU-CRD.**
 
 From the initial selection of sepsis patients patients (Sepsis-3) are filtered using the following inclusion criteria:
 
-- Adult (≥18 years of age)
-- Lactate value > 3
+- Adult (≥ 18 years of age)
+- Lactate value ≥ 3
 - LoS > 24 h
 
 At every step monitor the following demographics to see who is being excluded:
