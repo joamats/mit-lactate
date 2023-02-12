@@ -202,6 +202,38 @@ CREATE TABLE `db_name.my_eICU.pivoted_comorbidities` AS
   AS ph
   ON ph.patientunitstayid_ph = icu.patientunitstayid
 
+),
+
+  cirrhosis AS (
+    SELECT patientunitstayid, 1 AS cirrhosis_present
+    FROM (
+        SELECT distinct patientunitstayid 
+        FROM `physionet-data.eicu_crd.pasthistory` 
+        WHERE pasthistorypath
+        IN ("notes/Progress Notes/Past History/Organ Systems/Gastrointestinal (R)/Cirrhosis/jaundice",
+            "notes/Progress Notes/Past History/Organ Systems/Gastrointestinal (R)/Cirrhosis/UGI bleeding",
+            "notes/Progress Notes/Past History/Organ Systems/Gastrointestinal (R)/Cirrhosis/encephalopathy",
+            "notes/Progress Notes/Past History/Organ Systems/Gastrointestinal (R)/Cirrhosis/ascites",
+            "notes/Progress Notes/Past History/Organ Systems/Gastrointestinal (R)/Cirrhosis/varices",
+            "notes/Progress Notes/Past History/Organ Systems/Gastrointestinal (R)/Cirrhosis/biopsy proven",
+            "notes/Progress Notes/Past History/Organ Systems/Gastrointestinal (R)/Cirrhosis/clinical diagnosis",
+            "notes/Progress Notes/Past History/Organ Systems/Gastrointestinal (R)/Cirrhosis/coma"
+        )
+    UNION ALL
+    SELECT distinct patientunitstayid
+    FROM `physionet-data.eicu_crd.apachepredvar`
+    WHERE cirrhosis = 1
+
+    UNION ALL
+    SELECT distinct patientunitstayid
+    FROM `physionet-data.eicu_crd.diagnosis`
+    WHERE diagnosisstring
+    IN ("gastrointestinal|hepatic disease|hepatic dysfunction|with cirrhosis",
+        "gastrointestinal|hepatic disease|hepatic dysfunction|with cirrhosis|biliary",
+        "gastrointestinal|hepatic disease|hepatic dysfunction|with cirrhosis|alcoholic",
+        "gastrointestinal|hepatic disease|hepatic dysfunction|with cirrhosis|cryptogenic"
+       )
+    )
 )
 
 SELECT temp_table.patientunitstayid
@@ -306,6 +338,16 @@ SELECT temp_table.patientunitstayid
     THEN 2
     ELSE 0
     END AS diabetes_types
+  
+  , CASE
+    WHEN cirrhosis.cirrhosis_present = 1
+    THEN 1
+    ELSE 0
+    END AS cirrhosis_present
 
   FROM temp_table
+  LEFT JOIN cirrhosis
+  ON cirrhosis.patientunitstayid = temp_table.patientunitstayid
+
+
   ORDER BY patientunitstayid
