@@ -6,8 +6,9 @@ WITH lac AS (
   , lactate
   , ROW_NUMBER() OVER(PARTITION BY patientunitstayid ORDER BY chartoffset ASC) AS total_seq
   , CASE
-      WHEN chartoffset >= -1440 AND chartoffset < 240    THEN 0 -- we'll take day 0 up to first 4 hours
-      WHEN chartoffset >= 240   AND chartoffset < 1440   THEN 1
+      --WHEN chartoffset >= -1440 AND chartoffset < 240    THEN 0 -- we'll take day 0 up to first 4 hours
+      --WHEN chartoffset >= 240   AND chartoffset < 1440   THEN 1
+      WHEN chartoffset >= 0   AND chartoffset < 1440   THEN 1
       WHEN chartoffset >= 1440  AND chartoffset < 1440*2 THEN 2
       ELSE NULL
     END AS day
@@ -334,7 +335,7 @@ SELECT DISTINCT
 
   , COALESCE(icustay_detail.admissionweight, icustay_detail.dischargeweight) AS weight
   
-  , lactate_day0
+  --, lactate_day0
   , lactate_day1
   , lactate_freq_day1
   , lactate_day2
@@ -408,10 +409,7 @@ LEFT JOIN(
 AS adm
 ON adm.patientunitstayid = yug.patientunitstayid
 
-LEFT JOIN(
-  SELECT *
-  FROM `protean-chassis-368116.my_eICU.pivoted_comorbidities`
-)
+LEFT JOIN `protean-chassis-368116.my_eICU.pivoted_comorbidities`
 AS coms
 ON coms.patientunitstayid = yug.patientunitstayid
 
