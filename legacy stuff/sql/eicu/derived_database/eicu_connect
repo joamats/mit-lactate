@@ -1,0 +1,7 @@
+SELECT patientunitstayid FROM turing-chess-353519.lactate_project.epi 
+UNION DISTINCT
+SELECT patientunitstayid FROM turing-chess-353519.lactate_project.dopa
+UNION DISTINCT
+SELECT patientunitstayid FROM turing-chess-353519.lactate_project.nore
+UNION DISTINCT
+SELECT patientunitstayid FROM turing-chess-353519.lactate_project.dobu

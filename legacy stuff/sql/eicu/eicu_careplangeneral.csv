@@ -1,0 +1,20 @@
+Intubated/nasal ETT,335,Start,Invasive
+Intubated/nasal ETT - difficult,52,Start,Invasive
+Intubated/oral ETT,59566,Start,Invasive
+Intubated/oral ETT - difficult,798,Start,Invasive
+Intubated/trach-acute,4829,Start,Invasive
+Intubated/trach-chronic,4993,Start,Invasive
+Not intubated/normal airway,206795,meaningless,Offline
+Not intubated/partial airway obstruction,1543,meaningless,Offline
+Ventilator bundle,18757,meaningless,Active
+Ventilator wean,11474,End,
+Bedside tracheotomy,113,Start,Invasive
+Non-invasive ventilation,26836,Start,Non-invasive
+Spontaneous - adequate,190809,Start,Offline
+Spontaneous - tenuous,32587,Start,Offline
+Ventilated - chronic dependency,3105,meaningless,Active
+Ventilated - rapid wean/extubation,5705,End,
+Ventilated - with daily extubation evaluation,51862,meaningless,Active
+Ventilated - with no daily extubation trial,14907,meaningless,Active
+,,,
+,Counts,,
