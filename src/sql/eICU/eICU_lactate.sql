@@ -98,6 +98,18 @@ transf AS (
      OR LOWER(celllabel) LIKE "%rbc%"
 ),
 
+transfusion_overall AS (
+
+  SELECT
+
+    patientunitstayid
+  , 1 AS transfusion_overall_yes
+
+  FROM transf
+
+  GROUP BY patientunitstayid
+),
+
 transfusion_1 AS (
 
   SELECT
@@ -196,6 +208,18 @@ fluids AS (
   )
 ),
 
+fluids_overall AS (
+
+  SELECT
+
+    patientunitstayid
+  , 1 AS fluids_overall_yes
+
+  FROM fluids
+
+  GROUP BY patientunitstayid
+),
+
 fluids_1 AS (
 
   SELECT
@@ -222,6 +246,48 @@ fluids_2 AS (
   WHERE day = 2
 
   GROUP BY patientunitstayid
+),
+
+rrt AS (
+
+   SELECT DISTINCT 
+      patientunitstayid
+      , 1 AS rrt_yes
+      , MIN(treatmentOffset) AS rrt_start_delta
+   FROM `physionet-data.eicu_crd.treatment`
+
+   WHERE treatmentstring LIKE "renal|dialysis|C%"
+      OR treatmentstring LIKE "renal|dialysis|hemodialysis|emergent%"
+      OR treatmentstring LIKE "renal|dialysis|hemodialysis|for acute renal failure"
+      OR treatmentstring LIKE "renal|dialysis|hemodialysis"
+   AND treatmentOffset > -1440
+
+   GROUP BY patientunitstayid
+
+   UNION DISTINCT
+
+   SELECT DISTINCT 
+      patientunitstayid
+      , 1 AS rrt_yes
+      , MIN(intakeOutputOffset) AS rrt_start_delta
+   FROM `physionet-data.eicu_crd.intakeoutput`
+
+   WHERE dialysistotal <> 0
+   AND intakeOutputOffset > -1440
+
+   GROUP BY patientunitstayid
+),
+
+rrt_overall AS (
+
+  SELECT 
+      patientunitstayid
+    , MAX(rrt_yes) AS rrt_overall_yes
+    , MIN(rrt_start_delta) AS rrt_start_delta
+
+  FROM rrt
+  GROUP BY patientunitstayid
+
 )
 
 
@@ -285,12 +351,41 @@ SELECT DISTINCT
     END AS mortality_in 
   , yug.hospitaldischargeoffset / 60 AS los_icu_hours
 
+  -- Treatments
+  , CASE 
+      WHEN 
+           yug.vent IS TRUE
+        OR vent_1 > 0
+        OR vent_2 > 0
+        OR vent_3 > 0
+        OR vent_4 > 0
+        OR vent_5 > 0
+      THEN 1
+      ELSE NULL
+    END AS mech_vent_overall_yes
+  
+  , rrt_overall_yes
+  , rrt_start_delta
+  
+  , CASE 
+      WHEN 
+           yug.vasopressor IS TRUE
+        OR pressor_1 > 0
+        OR pressor_2 > 0 
+        OR pressor_3 > 0 
+        OR pressor_4 > 0 
+      THEN 1
+      ELSE NULL
+    END AS vasopressor_overall_yes
+
   -- Blood Transfusion
+  , transfusion_overall_yes
   , COALESCE(transfusion_1.transfusion_yes, transfusion_2.transfusion_yes) AS transfusion_yes
   , transfusion_units_day1
   , transfusion_units_day2
 
   -- Fluids
+  , fluids_overall_yes
   , COALESCE(fluids_1.fluids_yes, fluids_2.fluids_yes) AS fluids_yes
   , fluids_sum_day1
   , fluids_sum_day2
@@ -332,17 +427,31 @@ ON lac_1.patientunitstayid = yug.patientunitstayid
 LEFT JOIN lac_2
 ON lac_2.patientunitstayid = yug.patientunitstayid
 
+LEFT JOIN transfusion_overall
+ON transfusion_overall.patientunitstayid = yug.patientunitstayid
+
 LEFT JOIN transfusion_1
 ON transfusion_1.patientunitstayid = yug.patientunitstayid
 
 LEFT JOIN transfusion_2
 ON transfusion_2.patientunitstayid = yug.patientunitstayid
 
+LEFT JOIN fluids_overall
+ON fluids_overall.patientunitstayid = yug.patientunitstayid
+
 LEFT JOIN fluids_1
 ON fluids_1.patientunitstayid = yug.patientunitstayid
 
 LEFT JOIN fluids_2
 ON fluids_2.patientunitstayid = yug.patientunitstayid
+
+LEFT JOIN rrt_overall
+ON rrt_overall.patientunitstayid = yug.patientunitstayid
+AND rrt_overall.rrt_start_delta > -1440 -- only considering RRT initiated in 1 day before ICU admission
+
+LEFT JOIN `protean-chassis-368116.my_eICU.aux_treatments`
+AS treatments
+ON treatments.patientunitstayid = yug.patientunitstayid
 
 -- Inclusion Criteria for later
 -- WHERE lactate_day0 IS NOT NULL
