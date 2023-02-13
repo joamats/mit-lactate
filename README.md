@@ -20,9 +20,8 @@ https://docs.google.com/spreadsheets/d/1NYRQ-eGS3CQEKjPwsEqoLHe82ctdbPU_LBAuY_Ed
 
 From the initial selection of sepsis patients patients (Sepsis-3) are filtered using the following inclusion criteria:
 
-- Sepsis-3
-- Adult (≥18 years of age)
-- Lactate value > 3
+- Adult (≥ 18 years of age)
+- Lactate values ≥ 3
 - LoS > 24 h
 
 At every step monitor the following demographics to see who is being excluded:
