@@ -1,6 +1,6 @@
 -- https://github.com/cjmartin0/ITUscoringAnalysis/blob/master/eICU_SOFAscores_SQL.txt
 
-drop table if exists `db_name.itu_sofa_day`
+drop table if exists `db_name.itu_sofa_day`;
 create table `db_name.itu_sofa_day` as
 
 with pivoted_sofa AS (
