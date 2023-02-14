@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 
 # eICU
-df1 = pd.read_csv("data/eICU_data2.csv")
+df1 = pd.read_csv("data/eICU_data.csv")
 print(f"\n200859 stays in the ICU")
 print(f"Removed {200859 - len(df1)} stays without sepsis")
 print(f"{len(df1)} sepsis stays")

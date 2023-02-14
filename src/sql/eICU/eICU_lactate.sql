@@ -8,7 +8,7 @@ WITH lac AS (
   , CASE
       --WHEN chartoffset >= -1440 AND chartoffset < 240    THEN 0 -- we'll take day 0 up to first 4 hours
       --WHEN chartoffset >= 240   AND chartoffset < 1440   THEN 1
-      WHEN chartoffset >= 0   AND chartoffset < 1440   THEN 1
+      WHEN chartoffset >= -1440 AND chartoffset < 1440   THEN 1
       WHEN chartoffset >= 1440  AND chartoffset < 1440*2 THEN 2
       ELSE NULL
     END AS day
@@ -324,7 +324,20 @@ SELECT DISTINCT
     END AS race_group
 
   , yug.Charlson as charlson_ci
+  , CASE 
+      WHEN ( yug.Charlson >= 0 AND yug.Charlson <= 3) THEN "0-3"
+      WHEN ( yug.Charlson >= 4 AND yug.Charlson <= 6) THEN "4-6" 
+      WHEN ( yug.Charlson >= 7 AND yug.Charlson <= 10) THEN "7-10" 
+      WHEN ( yug.Charlson > 10) THEN ">10" 
+    END AS CCI_ranges
+
   , yug.sofa_admit as sofa_day1 
+  , CASE 
+      WHEN ( yug.sofa_admit >= 0 AND yug.sofa_admit <= 3) THEN "0-3"
+      WHEN ( yug.sofa_admit >= 4 AND yug.sofa_admit <= 6) THEN "4-6" 
+      WHEN ( yug.sofa_admit >= 7 AND yug.sofa_admit <= 10) THEN "7-10" 
+      WHEN ( yug.sofa_admit > 10) THEN ">10" 
+    END AS SOFA_ranges
 
   , CASE WHEN adm.adm_elective = 1 THEN "Elective" ELSE "Emergency" END AS admit_type
   , yug.hospitaladmitsource AS admit_source
@@ -362,10 +375,10 @@ SELECT DISTINCT
         OR vent_4 > 0
         OR vent_5 > 0
       THEN 1
-      ELSE NULL
+      ELSE 0
     END AS mech_vent_overall_yes
   
-  , rrt_overall_yes
+  , CASE WHEN rrt_overall_yes = 1 THEN 1 ELSE 0 END AS rrt_overall_yes
   , rrt_start_delta
   
   , CASE 
@@ -376,18 +389,18 @@ SELECT DISTINCT
         OR pressor_3 > 0 
         OR pressor_4 > 0 
       THEN 1
-      ELSE NULL
+      ELSE 0
     END AS vasopressor_overall_yes
 
   -- Blood Transfusion
-  , transfusion_overall_yes
-  , COALESCE(transfusion_1.transfusion_yes, transfusion_2.transfusion_yes) AS transfusion_yes
+  , CASE WHEN transfusion_overall_yes = 1 THEN 1 ELSE 0 END AS transfusion_overall_yes
+  , COALESCE(transfusion_1.transfusion_yes, transfusion_2.transfusion_yes, 0) AS transfusion_yes
   , transfusion_units_day1
   , transfusion_units_day2
 
   -- Fluids
-  , fluids_overall_yes
-  , COALESCE(fluids_1.fluids_yes, fluids_2.fluids_yes) AS fluids_yes
+  , CASE WHEN fluids_overall_yes = 1 THEN 1 ELSE 0 END AS fluids_overall_yes
+  , COALESCE(fluids_1.fluids_yes, fluids_2.fluids_yes, 0) AS fluids_yes
   , fluids_sum_day1
   , fluids_sum_day2
 

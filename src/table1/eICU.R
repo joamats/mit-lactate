@@ -5,136 +5,131 @@ library(dplyr)
 library(flextable)
 library(magrittr)
 
-source("src/load_data.R")
+df <- read_csv('data/cohort_eICU2.csv', show_col_types = FALSE)
 
-df <- read_csv('data/cohort_merged.csv', show_col_types = FALSE)
-
+# Sex
 df$sex_female <- factor(df$sex_female, levels=c(1,0), labels=c("Female", "Male"))
-df$mortality_in <- factor(df$mortality_in, levels=c(1,0), labels=c("Died", "Survived"))
-df$mortality_90 <- factor(df$mortality_90, levels=c(1,0), labels=c("Died", "Survived"))
+label(df$sex_female) <- "Sex"
 
-df$mech_vent <- factor(df$mech_vent, levels=c(1,0), labels=c("Received", "Not received"))
-df$rrt <- factor(df$rrt, levels=c(1,0), labels=c("Received", "Did not receive"))
-df$vasopressor <- factor(df$vasopressor, levels=c(1,0), labels=c("Received", "Not received"))
+# Age
+label(df$age) <- "Age overall"
+units(df$age) <- "years"
 
-df$is_full_code_admission <- factor(df$is_full_code_admission, levels=c(0,1), labels=c("Not Full Code", "Full Code"))
-df$is_full_code_discharge <- factor(df$is_full_code_discharge, levels=c(0,1), labels=c("Not Full Code", "Full Code"))
+df$age_ranges <- df$age
+df$age_ranges[df$age >= 18 & df$age <= 44] <- "18 - 44"
+df$age_ranges[df$age >= 45 & df$age <= 64] <- "45 - 64"
+df$age_ranges[df$age >= 65 & df$age <= 74] <- "65 - 74"
+df$age_ranges[df$age >= 75 & df$age <= 84] <- "75 - 84"
+df$age_ranges[df$age >= 85] <- "85 and higher"
 
-df$age_ranges <- df$anchor_age
-df$age_ranges[df$anchor_age >= 18 & df$anchor_age <= 44] <- "18 - 44"
-df$age_ranges[df$anchor_age >= 45 & df$anchor_age <= 64] <- "45 - 64"
-df$age_ranges[df$anchor_age >= 65 & df$anchor_age <= 74] <- "65 - 74"
-df$age_ranges[df$anchor_age >= 75 & df$anchor_age <= 84] <- "75 - 84"
-df$age_ranges[df$anchor_age >= 85] <- "85 and higher"
-
-# Cohort of Source
-df <- df %>% mutate(source = ifelse(source == "mimic", "MIMIC", "eICU"))
-
-# Cancer Categories
-df <- df %>% mutate(cat_solid = ifelse(cat_solid == 1, "Present", "Not Present"))
-df <- df %>% mutate(cat_hematological = ifelse(cat_hematological == 1, "Present", "Not Present"))
-df <- df %>% mutate(cat_metastasized = ifelse(cat_metastasized == 1, "Present", "Not Present"))
-
-# Cancer Types
-df <- df %>% mutate(loc_colon_rectal = ifelse(loc_colon_rectal == 1, "Present", "Not Present"))
-df <- df %>% mutate(loc_liver_bd = ifelse(loc_liver_bd == 1, "Present", "Not Present"))
-df <- df %>% mutate(loc_pancreatic = ifelse(loc_pancreatic == 1, "Present", "Not Present"))
-df <- df %>% mutate(loc_lung_bronchus = ifelse(loc_lung_bronchus == 1, "Present", "Not Present"))
-df <- df %>% mutate(loc_melanoma = ifelse(loc_melanoma == 1, "Present", "Not Present"))
-df <- df %>% mutate(loc_breast = ifelse(loc_breast == 1, "Present", "Not Present"))
-df <- df %>% mutate(loc_endometrial = ifelse(loc_endometrial == 1, "Present", "Not Present"))
-df <- df %>% mutate(loc_prostate = ifelse(loc_prostate == 1, "Present", "Not Present"))
-df <- df %>% mutate(loc_kidney = ifelse(loc_kidney == 1, "Present", "Not Present"))
-df <- df %>% mutate(loc_bladder = ifelse(loc_bladder == 1, "Present", "Not Present"))
-df <- df %>% mutate(loc_thyroid = ifelse(loc_thyroid == 1, "Present", "Not Present"))
-df <- df %>% mutate(loc_nhl = ifelse(loc_nhl == 1, "Present", "Not Present"))
-df <- df %>% mutate(loc_leukemia = ifelse(loc_leukemia == 1, "Present", "Not Present"))
-
-# Get data into factor format
-df$SOFA_ranges <- factor(df$SOFA_ranges, levels = c('0-3', '4-6', '7-10', '>10'),
-                                         labels = c('0 - 3', '4 - 6','7 - 10', '11 and above'))
-
-df$CCI_ranges <- factor(df$CCI_ranges, levels = c('0-3', '4-6', '7-10', '>10'),
-                                       labels = c('0 - 3', '4 - 6', '7 - 10', '11 and above'))
-df$source <- factor(df$source)
-
-df$com_hypertension_present <- factor(df$com_hypertension_present, levels = c(0, 1), 
-                        labels = c('Hypertension absent', 'Hypertension present'))
-
-df$com_heart_failure_present <- factor(df$com_heart_failure_present, levels = c(0, 1), 
-                        labels = c('CHF absent', 'CHF present'))
-
-df$com_copd_present <- factor(df$com_copd_present, levels = c(0, 1), 
-                        labels = c('COPD absent', 'COPD present'))
-
-df$com_asthma_present <- factor(df$com_asthma_present, levels = c(0, 1), 
-                        labels = c('Asthma absent', 'Asthma present'))
-
-df <- within(df, com_ckd_stages <- factor(com_ckd_stages, levels = c(0, 1, 2, 3, 4, 5)))
-df <- within(df, com_ckd_stages <- fct_collapse(com_ckd_stages, Absent=c("0", "1", "2"), Present=c("3", "4", "5")))
-
-df$cancer_type <- 0
-df$cancer_type[df$cat_solid == "Present"] <- 1
-df$cancer_type[df$cat_metastasized == "Present"] <- 2
-df$cancer_type[df$cat_hematological == "Present"] <- 3
-
-df$cancer_type <- factor(df$cancer_type, levels = c(1, 2, 3), 
-                        labels = c('Solid cancer', 'Metastasized cancer', 'Hematological cancer'))
-
-# Factorize and label variables
 label(df$age_ranges) <- "Age by group"
 units(df$age_ranges) <- "years"
 
-label(df$anchor_age) <- "Age overall"
-units(df$anchor_age) <- "years"
+# Race/Ethnicity
+df$race_group <- factor(df$race_group, levels = c("White", "Black", "Hispanic", "Asian", "Other"),
+                                       labels = c("White", "Black", "Hispanic", "Asian", "Other"))
+label(df$race_group) <- "Race Group"
 
-label(df$sex_female) <- "Sex"
-label(df$SOFA) <- "SOFA continuous"
+# Year
+df$year <- factor(df$year, levels = c('2014', '2015'),
+                           labels = c('2014', '2015'))
+label(df$year) <- "Year of Admission"
+
+# Admission SOFA
+df$SOFA_ranges <- factor(df$SOFA_ranges, levels = c('0-3', '4-6', '7-10', '>10'),
+                                         labels = c('0 - 3', '4 - 6','7 - 10', '11 and above'))
+
+label(df$sofa_day1) <- "SOFA"
 label(df$SOFA_ranges) <- "SOFA Ranges"
 
-label(df$los_icu) <- "Length of stay"
-units(df$los_icu) <- "days"
+# Comorbidites
+df$CCI_ranges <- factor(df$CCI_ranges, levels = c('0-3', '4-6', '7-10', '>10'),
+                                       labels = c('0 - 3', '4 - 6', '7 - 10', '11 and above'))
 
-label(df$CCI) <- "Charlson Comorbidity Index continuous (CCI)"
+label(df$charlson_ci) <- "Charlson Comorbidity Index (CCI)"
 label(df$CCI_ranges) <- "CCI Ranges"
 
-label(df$mech_vent) <- "Mechanic Ventilation"
-label(df$rrt) <- "Renal Replacement Therapy"
-label(df$vasopressor) <- "Vasopressor(s)"
+df$cirrhosis_present <- factor(df$cirrhosis_present, levels = c(0, 1), 
+                        labels = c('Cirrhosis absent', 'Cirrhosis present'))
 
+label(df$cirrhosis_present) <- "Cirrhosis"
+
+df$heart_failure_present <- factor(df$heart_failure_present, levels = c(0, 1), 
+                        labels = c('CHF absent', 'CHF present'))
+
+label(df$heart_failure_present) <- "Congestive Heart Failure (CHF)"
+
+df <- within(df, ckd_stages <- factor(ckd_stages, levels = c(0, 1, 2, 3, 4, 5)))
+df <- within(df, ckd_stages <- fct_collapse(ckd_stages, Absent=c("0", "1", "2"), Present=c("3", "4", "5")))
+
+label(df$ckd_stages) <- "CKD"
+
+# Weight
+label(df$weight) <- "Weight"
+units(df$weight) <- "kg"
+
+# Lactate
+label(df$lactate_day1) <- "Lactate Day 1"
+units(df$lactate_day1) <- "mmol/L"
+label(df$lactate_freq_day1) <- "No. Measurements of Lactate in Day 1"
+
+label(df$lactate_day2) <- "Lactate Day 2"
+units(df$lactate_day2) <- "mmol/L"
+label(df$lactate_freq_day2) <- "No. Measurements of Lactate in Day 2"
+
+# Hemoglobin
+label(df$hemoglobin_stay_min) <- "Min. Hemoglobin (entire stay)"
+units(df$hemoglobin_stay_min) <- "g/dL"
+
+# Outcomes
+df$mortality_in <- factor(df$mortality_in, levels=c(1,0), labels=c("Died", "Survived"))
 label(df$mortality_in) <- "In-hospital Mortality"
-label(df$mortality_90) <- "90-days Mortality"
 
-label(df$has_cancer) <- "Active Cancer"
+df$los_icu_days <- df$los_icu_hours / 24
+label(df$los_icu_days) <- "Length of stay"
+units(df$los_icu_days) <- "days"
 
-label(df$cat_solid) <- "Solid Cancer"
-label(df$cat_hematological) <- "Hematological Cancer"
-label(df$cat_metastasized) <- "Metastasized Cancer"
+# Mechanical Ventilation
+df$mech_vent_overall_yes <- factor(df$mech_vent_overall_yes, levels=c(1,0), labels=c("Received", "Not received"))
+label(df$mech_vent_overall_yes) <- "Mechanical Ventilation"
 
-label(df$loc_breast) <- "Breast"
-label(df$loc_prostate) <- "Prostate"
-label(df$loc_lung_bronchus) <- "Lung (including bronchus)"
-label(df$loc_colon_rectal) <- "Colon and Rectal (combined)"
-label(df$loc_melanoma) <- "Melanoma"
-label(df$loc_bladder) <- "Bladder"
-label(df$loc_kidney) <- "Kidney"
-label(df$loc_nhl) <- "NHL"
-label(df$loc_endometrial) <- "Endometrial"
-label(df$loc_leukemia) <- "Leukemia"
-label(df$loc_pancreatic) <- "Pancreatic"
-label(df$loc_thyroid) <- "Thyroid"
-label(df$loc_liver_bd) <- "Liver and intrahepatic BD"
+# RRT
+df$rrt_overall_yes <- factor(df$rrt_overall_yes, levels=c(1,0), labels=c("Received", "Did not receive"))
+label(df$rrt_overall_yes) <- "Renal Replacement Therapy"
 
-label(df$com_hypertension_present) <- "Hypertension"
-label(df$com_heart_failure_present) <- "Heart Failure"
-label(df$com_copd_present) <- "COPD"
-label(df$com_asthma_present) <- "Asthma"
-label(df$com_ckd_stages) <- "CKD"
+df$rrt_start_delta <- df$rrt_start_delta / 60 
+label(df$rrt_start_delta) <- "Time elapsed before RRT"
+units(df$rrt_start_delta) <- "hours"
 
-label(df$is_full_code_admission) <- "Full Code upon Admission"
-label(df$is_full_code_discharge) <- "Full Code upon Discharge"
+# VPs
+df$vasopressor_overall_yes <- factor(df$vasopressor_overall_yes, levels=c(1,0), labels=c("Received", "Not received"))
+label(df$vasopressor_overall_yes) <- "Vasopressor(s)"
 
-label(df$race_group) <- "Race"
+# Blood Transfusion
+df$transfusion_overall_yes <- factor(df$transfusion_overall_yes, levels=c(1,0), labels=c("Received", "Not received"))
+label(df$transfusion_overall_yes) <- "Blood Transfusion (entire stay)"
+
+df$transfusion_yes <- factor(df$transfusion_yes, levels=c(1,0), labels=c("Received", "Not received"))
+label(df$transfusion_yes) <- "Blood Transfusion (first 2 days)"
+
+label(df$transfusion_units_day1) <- "Volume of Blood received (day 1)"
+units(df$transfusion_units_day1) <- "mL"
+
+label(df$transfusion_units_day2) <- "Volume of Blood received (day 2)"
+units(df$transfusion_units_day2) <- "mL"
+
+# Fluids
+df$fluids_overall_yes <- factor(df$fluids_overall_yes, levels=c(1,0), labels=c("Received", "Not received"))
+label(df$fluids_overall_yes) <- "Fluids (entire stay)"
+
+df$fluids_yes <- factor(df$fluids_yes, levels=c(1,0), labels=c("Received", "Not received"))
+label(df$fluids_yes) <- "Fluids (during the 2 first days)"
+
+label(df$fluids_sum_day1) <- "Volume of Fluids received (day 1)"
+units(df$fluids_sum_day1) <- "mL"
+
+label(df$fluids_sum_day2) <- "Volume of Fluids received (day 2)"
+units(df$fluids_sum_day2) <- "mL"
 
 
 render.categorical <- function(x, ...) {
@@ -148,19 +143,18 @@ render.strat <- function (label, n, ...) {
 }
 
 # Create Table1 Object
-tbl1 <- table1(~ mortality_in + mortality_90 +
-               mech_vent + rrt + vasopressor +
-               age_ranges + anchor_age + sex_female + race_group + 
-               SOFA_ranges + SOFA + CCI_ranges + CCI +
-               is_full_code_admission + is_full_code_discharge +
-               cat_solid + cat_hematological + cat_metastasized +
-               loc_colon_rectal + loc_liver_bd + loc_pancreatic +
-               loc_lung_bronchus + loc_melanoma + loc_breast +
-               loc_endometrial + loc_prostate + loc_kidney +
-               loc_bladder + loc_thyroid + loc_nhl + loc_leukemia +
-               com_hypertension_present + com_heart_failure_present +
-               com_asthma_present + com_copd_present + com_ckd_stages
-               | source,
+tbl1 <- table1(~ age + age_ranges + sex_female + race_group + year +
+                 sofa_day1 + SOFA_ranges + charlson_ci + CCI_ranges +
+                 cirrhosis_present + heart_failure_present + ckd_stages +
+                 lactate_day1 + lactate_day2 + lactate_freq_day1 + lactate_freq_day2 +
+                 hemoglobin_stay_min + 
+                 los_icu_days +
+                 mech_vent_overall_yes +
+                 rrt_overall_yes + rrt_start_delta +
+                 vasopressor_overall_yes +
+                 transfusion_overall_yes + transfusion_yes + transfusion_units_day1 + transfusion_units_day2 +
+                 fluids_overall_yes + fluids_yes + fluids_sum_day1 + fluids_sum_day2
+               | mortality_in,
                data=df,
                render.missing=NULL,
                topclass="Rtable1-grid Rtable1-shade Rtable1-times",
@@ -170,7 +164,7 @@ tbl1 <- table1(~ mortality_in + mortality_90 +
 
 
 # Convert to flextable
-t1flex(tbl1) %>% save_as_docx(path="results/table1/MIMIC_and_eICU.docx")
+t1flex(tbl1) %>% save_as_docx(path="results/table1/eICU.docx")
 
 
 ###############################
@@ -178,14 +172,14 @@ t1flex(tbl1) %>% save_as_docx(path="results/table1/MIMIC_and_eICU.docx")
 ###############################
 
 # Create table1 object for SOFA
-tbl_pos <- table1(~ rrt + mech_vent + vasopressor + race_group 
-                  | mortality_in*cancer_type, 
-                  data=df, 
-                  render.missing=NULL, 
-                  topclass="Rtable1-grid Rtable1-shade Rtable1-times",
-                  render.categorical=render.categorical, 
-                  render.strat=render.strat)
+#tbl_pos <- table1(~ rrt_overall_yes + mech_vent_overall_yes + vasopressor_overall_yes + race_group 
+#                  | mortality_in*cancer_type, 
+#                  data=df, 
+#                  render.missing=NULL, 
+#                  topclass="Rtable1-grid Rtable1-shade Rtable1-times",
+#                  render.categorical=render.categorical, 
+#                  render.strat=render.strat)
 
 # Convert to flextable
-t1flex(tbl_pos) %>% save_as_docx(path="results/table1/Table_posA.docx")
+#t1flex(tbl_pos) %>% save_as_docx(path="results/table1/Table_posA.docx")
 
