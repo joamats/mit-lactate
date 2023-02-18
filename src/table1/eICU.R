@@ -5,7 +5,7 @@ library(dplyr)
 library(flextable)
 library(magrittr)
 
-df <- read_csv('data/cohort_eICU2.csv', show_col_types = FALSE)
+df <- read_csv('data/cohort_eICU_lac1.csv', show_col_types = FALSE)
 
 # Sex
 df$sex_female <- factor(df$sex_female, levels=c(1,0), labels=c("Female", "Male"))
@@ -143,7 +143,7 @@ render.strat <- function (label, n, ...) {
 }
 
 # Create Table1 Object
-tbl1 <- table1(~ age + age_ranges + sex_female + race_group + year +
+tbl1 <- table1(~ age + age_ranges + race_group + year +
                  sofa_day1 + SOFA_ranges + charlson_ci + CCI_ranges +
                  cirrhosis_present + heart_failure_present + ckd_stages +
                  lactate_day1 + lactate_day2 + lactate_freq_day1 + lactate_freq_day2 +
@@ -153,8 +153,8 @@ tbl1 <- table1(~ age + age_ranges + sex_female + race_group + year +
                  rrt_overall_yes + rrt_start_delta +
                  vasopressor_overall_yes +
                  transfusion_overall_yes + transfusion_yes + transfusion_units_day1 + transfusion_units_day2 +
-                 fluids_overall_yes + fluids_yes + fluids_sum_day1 + fluids_sum_day2
-               | mortality_in,
+                 fluids_overall_yes + fluids_yes + fluids_sum_day1 + fluids_sum_day2 + mortality_in
+               | sex_female,
                data=df,
                render.missing=NULL,
                topclass="Rtable1-grid Rtable1-shade Rtable1-times",
@@ -164,7 +164,7 @@ tbl1 <- table1(~ age + age_ranges + sex_female + race_group + year +
 
 
 # Convert to flextable
-t1flex(tbl1) %>% save_as_docx(path="results/table1/eICU.docx")
+t1flex(tbl1) %>% save_as_docx(path="results/table1/eICU_lac1_sex.docx")
 
 
 ###############################
@@ -182,4 +182,5 @@ t1flex(tbl1) %>% save_as_docx(path="results/table1/eICU.docx")
 
 # Convert to flextable
 #t1flex(tbl_pos) %>% save_as_docx(path="results/table1/Table_posA.docx")
+
 
