@@ -17,8 +17,6 @@ df2 = df1[~df1.lactate_day1.isnull()]
 print(f"Removed {len(df1) - len(df2)} stays without lactate day 1")
 print(f"{len(df2)} stays with sepsis and lactate day 1")
 
-df2 = df2
-
 df3 = df2[df2.los_icu_hours >= 24]
 print(f"Removed {len(df2) - len(df3)} stays with less than 24 hours")
 print(f"{len(df3)} stays with sepsis, lactate day 1 & 2, and LoS > 24h")
