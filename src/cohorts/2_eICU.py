@@ -43,4 +43,3 @@ demo6 = print_demo(get_demography(df6))
 print(f"{len(df6)} stays with sepsis and lactate day 1 & 2 ({demo6})")
 df6.to_csv(os.path.join(root_dir, 'data', 'cohort_eICU_lac1_lac2.csv'))
 
-# df6.to_csv('data/cohort_eICU4.csv')
