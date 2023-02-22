@@ -91,11 +91,11 @@ units(df$los_icu_days) <- "days"
 
 # Mechanical Ventilation
 df$mech_vent_overall_yes <- factor(df$mech_vent_overall_yes, levels=c(1,0), labels=c("Received", "Not received"))
-label(df$mech_vent_overall_yes) <- "Mechanical Ventilation"
+label(df$mech_vent_overall_yes) <- "Mechanical Ventilation (entire stay)"
 
 # RRT
 df$rrt_overall_yes <- factor(df$rrt_overall_yes, levels=c(1,0), labels=c("Received", "Did not receive"))
-label(df$rrt_overall_yes) <- "Renal Replacement Therapy"
+label(df$rrt_overall_yes) <- "RRT (entire stay)"
 
 df$rrt_start_delta <- df$rrt_start_delta / 60 
 label(df$rrt_start_delta) <- "Time elapsed before RRT"
@@ -103,7 +103,7 @@ units(df$rrt_start_delta) <- "hours"
 
 # VPs
 df$vasopressor_overall_yes <- factor(df$vasopressor_overall_yes, levels=c(1,0), labels=c("Received", "Not received"))
-label(df$vasopressor_overall_yes) <- "Vasopressor(s)"
+label(df$vasopressor_overall_yes) <- "Vasopressor(s) (entire stay)"
 
 # Blood Transfusion
 df$transfusion_overall_yes <- factor(df$transfusion_overall_yes, levels=c(1,0), labels=c("Received", "Not received"))
@@ -148,12 +148,12 @@ tbl1 <- table1(~ age + age_ranges + race_group + year +
                  cirrhosis_present + heart_failure_present + ckd_stages +
                  lactate_day1 + lactate_day2 + lactate_freq_day1 + lactate_freq_day2 +
                  hemoglobin_stay_min + 
-                 los_icu_days +
+                 los_icu_days + mortality_in
                  mech_vent_overall_yes +
                  rrt_overall_yes + rrt_start_delta +
                  vasopressor_overall_yes +
                  transfusion_overall_yes + transfusion_yes + transfusion_units_day1 + transfusion_units_day2 +
-                 fluids_overall_yes + fluids_yes + fluids_sum_day1 + fluids_sum_day2 + mortality_in
+                 fluids_overall_yes + fluids_yes + fluids_sum_day1 + fluids_sum_day2 
                | sex_female,
                data=df,
                render.missing=NULL,

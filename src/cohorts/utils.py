@@ -23,9 +23,9 @@ def print_demo(demo):
         if isinstance(value, dict):
             demo_str += f"{key}: ["
             for key2, value2 in value.items():
-                demo_str += f"{key2}: {round(value2*100)}%, "
+                demo_str += f"{key2}: {round(value2*100,1)}%, "
             demo_str = demo_str[:-2] + "], "
         else:
-            demo_str += f"{key}: {round(value*100)}%, "
+            demo_str += f"{key}: {round(value*100,1)}%, "
     demo_str = demo_str[:-2]
     return demo_str
