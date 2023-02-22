@@ -5,8 +5,11 @@ from argparse import ArgumentParser
 
 
 def get_binned_data(df):
-    # split the data into bins by lactate
-    # bins: All, 0-2, 2-4, 4-6, >6
+    """
+    split the data into bins by lactate, 
+    bins: All, 0-2, 2-4, 4-6, >6
+    bins are subdivided by race
+    """
     # switch this to lactate_day2 if you want to use that instead
     lacs = df.lactate_day1
     races = ["White", "Black"]
@@ -30,15 +33,18 @@ def get_table2(dfs):
     table = pd.DataFrame(columns=["mortality_in", "los_icu_hours", "mech_vent_overall_yes", "rrt_overall_yes",
                          "vasopressor_overall_yes", "transfusion_overall_yes", "fluids_overall_yes"], index=dfs.keys())
     for key in dfs.keys():
+        # Here we currently only get the mean of each column, but we can also get the median, standard deviation, etc.
         table.loc[key] = [dfs[key].mortality_in.mean(), dfs[key].los_icu_hours.mean(), dfs[key].mech_vent_overall_yes.mean(), dfs[key].rrt_overall_yes.mean(
         ), dfs[key].vasopressor_overall_yes.mean(), dfs[key].transfusion_overall_yes.mean(), dfs[key].fluids_overall_yes.mean()]
     return table
 
 
 def main(args):
+    # read in the data
     df = pd.read_csv(args.input)
-    df.keys()
+    # get the binned data (binned by lactate and race)
     dfs = get_binned_data(df)
+    # create the table
     table = get_table2(dfs)
     # save the table
     table.to_csv(args.output)
