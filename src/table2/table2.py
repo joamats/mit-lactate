@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 import os
 from argparse import ArgumentParser
+from scipy import stats
 
 
 def get_binned_data(df):
@@ -30,12 +31,33 @@ def get_table2(dfs):
     # Create a table with the following columns:
     # mortality_in, los_icu_hours, mech_vent_overall_yes, rrt_overall_yes, vasopressor_overall_yes, transfusion_overall_yes, fluids_overall_yes
     # the rows will be the bins of lactate_day1
-    table = pd.DataFrame(columns=["mortality_in", "los_icu_hours", "mech_vent_overall_yes", "rrt_overall_yes",
-                         "vasopressor_overall_yes", "transfusion_overall_yes", "fluids_overall_yes"], index=dfs.keys())
+    cols = ["mortality_in", "los_icu_hours", "mech_vent_overall_yes", "rrt_overall_yes",
+            "vasopressor_overall_yes", "transfusion_overall_yes", "fluids_overall_yes"]
+    table = pd.DataFrame(columns=cols, index=dfs.keys())
     for key in dfs.keys():
-        # Here we currently only get the mean of each column, but we can also get the median, standard deviation, etc.
-        table.loc[key] = [dfs[key].mortality_in.mean(), dfs[key].los_icu_hours.mean(), dfs[key].mech_vent_overall_yes.mean(), dfs[key].rrt_overall_yes.mean(
-        ), dfs[key].vasopressor_overall_yes.mean(), dfs[key].transfusion_overall_yes.mean(), dfs[key].fluids_overall_yes.mean()]
+        # For table 1, just report the mean and standard deviation of each column
+        for col in cols:
+            mean = dfs[key][col].mean()
+            std = dfs[key][col].std()
+            if col == "los_icu_hours":
+                # round the mean and standard deviation
+                table.loc[key][col] = f"{round(mean/24, 1)} ({round(std/24, 1)})"
+            else:
+                # round the mean and standard deviation to 2 decimal places
+                table.loc[key][col] = f"{round(mean, 2)} ({round(std, 2)})"
+
+        # UNCOMMENT THIS SECTION TO USE THE MEDIAN AND INTERQUARTILE RANGE INSTEAD OF THE MEAN AND STANDARD DEVIATION
+        # # for each column, either report the mean and standard deviation, or the median and interquartile range, based on the distribution of the data
+        # # if the data is normally distributed, use the mean and standard deviation
+        # # check if the data is normally distributed by using the Shapiro-Wilk test
+        # # if the p-value is less than 0.05, the data is not normally distributed
+        # for col in cols:
+        #     if stats.shapiro(dfs[key][col])[1] < 0.05:
+        #         # if the data is not normally distributed, use the median and interquartile range
+        #         table.loc[key][col] = f"{dfs[key][col].median()} ({dfs[key][col].quantile(0.25)}-{dfs[key][col].quantile(0.75)})"
+        #     else:
+        #         # if the data is normally distributed, use the mean and standard deviation
+        #         table.loc[key][col] = f"{dfs[key][col].mean()} ({dfs[key][col].std()})"
     return table
 
 
