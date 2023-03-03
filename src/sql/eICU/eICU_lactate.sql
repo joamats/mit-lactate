@@ -277,6 +277,31 @@ rrt AS (
    AND intakeOutputOffset > -1440
 
    GROUP BY patientunitstayid
+
+   UNION DISTINCT
+
+   SELECT 
+      patientunitstayid
+      , 1 AS rrt_yes
+      , MIN(noteoffset) as rrt_start_delta
+   FROM `physionet-data.eicu_crd.note` 
+
+   WHERE noteoffset > -1440 
+   AND (notetype ="Dialysis Catheter" OR  notetype ="Dialysis Catheter Change")
+
+   GROUP BY patientunitstayid
+
+  UNION DISTINCT
+
+   SELECT 
+      patientunitstayid
+      , 1 AS rrt_yes
+      , MIN(startoffset) as rrt_start_delta
+   FROM `physionet-data.eicu_crd_derived.crrt_dataset` 
+   
+   WHERE startoffset > -1440 
+ 
+   GROUP BY patientunitstayid
 ),
 
 rrt_overall AS (
