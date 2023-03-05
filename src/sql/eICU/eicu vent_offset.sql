@@ -6,7 +6,7 @@ CREATE TABLE `db_name.my_eICU.dummy` AS
 
 -- Tables accessed
 -- derived -> ventilation_events
--- note, respiratorycharting, notes, nursecare
+-- original --> note, respiratorycharting, respiratorycare, notes, nursecare
 
 WITH resp_chart AS (
 
@@ -145,6 +145,72 @@ WITH resp_chart AS (
   GROUP BY patientunitstayid
 ) 
 
+/*
+airwaytype -> Oral ETT, Nasal ETT, Tracheostomy, Double-Lumen Tube (do not use -> Cricothyrotomy)
+airwaysize -> all unless ""
+airwayposition -> all unless: Other (Comment), deflated, mlt, Documentation undone
+
+Heuristic for times 
+use ventstartoffset for start of ventilation
+use priorventendoffset for end of ventilation
+*/
+
+, resp_care AS (
+
+  SELECT 
+  patientunitstayid, 
+  1 AS vent_yes,
+  MIN(airwaytype) AS event,
+  
+  MIN(CASE 
+  WHEN LOWER(airwaytype) LIKE "%ETT%"
+  OR LOWER(airwaytype) LIKE "%Tracheostomy%"
+  OR LOWER(airwaytype) LIKE "%Tube%"
+  OR LOWER(airwaysize) NOT LIKE ""
+  OR LOWER(airwayposition) NOT LIKE "Other (Comment)"
+  OR LOWER(airwayposition) NOT LIKE "deflated"
+  OR LOWER(airwayposition) NOT LIKE "mlt"
+  OR LOWER(airwayposition) NOT LIKE "Documentation undone"
+  THEN ventstartoffset
+  ELSE NULL
+  END) AS vent_start_delta,
+
+  MAX(CASE 
+  WHEN LOWER(airwaytype) LIKE "%ETT%" 
+  OR LOWER(airwaytype) LIKE "%Tracheostomy%" 
+  OR LOWER(airwaytype) LIKE "%Tube%"
+  OR LOWER(airwaysize) NOT LIKE ""
+  OR LOWER(airwayposition) NOT LIKE "Other (Comment)"
+  OR LOWER(airwayposition) NOT LIKE "deflated"
+  OR LOWER(airwayposition) NOT LIKE "mlt"
+  OR LOWER(airwayposition) NOT LIKE "Documentation undone"
+  THEN priorventendoffset
+  ELSE NULL
+  END) AS vent_stop_delta,
+
+  MAX(offset_discharge) AS offset_discharge
+
+  FROM `physionet-data.eicu_crd.respiratorycare` AS rcare
+
+  LEFT JOIN(
+  SELECT patientunitstayid AS pat_pid, unitdischargeoffset AS offset_discharge
+  FROM `physionet-data.eicu_crd.patient`
+  )
+  AS pat
+  ON pat.pat_pid = rcare.patientunitstayid
+
+  WHERE LOWER(airwaytype) LIKE "%ETT%" 
+  OR LOWER(airwaytype) LIKE "%Tracheostomy%" 
+  OR LOWER(airwaytype) LIKE "%Tube%"
+  OR LOWER(airwaysize) NOT LIKE ""
+  OR LOWER(airwayposition) NOT LIKE "Other (Comment)"
+  OR LOWER(airwayposition) NOT LIKE "deflated"
+  OR LOWER(airwayposition) NOT LIKE "mlt"
+  OR LOWER(airwayposition) NOT LIKE " Documentation undone"
+
+  GROUP BY patientunitstayid
+)
+
 , union_table AS (
 
   SELECT * FROM resp_chart
@@ -160,7 +226,10 @@ WITH resp_chart AS (
   UNION DISTINCT
 
   SELECT * FROM vent_vente
+  
+  UNION DISTINCT
 
+  SELECT * FROM resp_care
 )
 
 SELECT 
@@ -172,7 +241,7 @@ MAX(vent_stop_delta) AS vent_stop_delta,
 MAX(offset_discharge) AS offset_discharge,
 
 CASE 
-WHEN MAX(vent_stop_delta != 0)
+WHEN (MAX(vent_stop_delta != 0) OR MAX(vent_stop_delta IS NOT NULL))
 THEN (MAX(vent_stop_delta) - MIN(vent_start_delta))
 ELSE (MAX(offset_discharge) - MIN(vent_start_delta))
 END AS vent_duration
