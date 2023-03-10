@@ -1,5 +1,7 @@
 # Is Lactate Racist?
 
+Presentation: https://docs.google.com/presentation/d/1-TKk9ce1XwDHM6TvKuICP6sDfurDmkwcSuGOBdo1BLE/edit#slide=id.g2141956ef13_0_5
+
 ## Experimental Design
 
 ### Research Question
