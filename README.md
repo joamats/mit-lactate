@@ -81,7 +81,7 @@ After getting credentialing at PhysioNet, you must sign the data use agreement a
 Having all the necessary tables for the cohort generation query in your project, run the following command to fetch the data as a dataframe that will be saved as CSV in your local project. Make sure you have all required files and folders.
 
 ```shell
-python3 src/cohorts/1_get_data.py --sql "src/sql/MIMIC/MIMIC_lactate.sql" --destination "data/MIMIC_data.csv"
+python3 src/cohorts/1_get_data.py --sql "src/sql/MIMIC/main.sql" --destination "data/MIMIC_data.csv"
 ```
 
 This will create the file `data/MIMIC_data.csv`

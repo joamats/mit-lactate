@@ -14,6 +14,12 @@ def get_demography(df):
     demo["sex"] = {
         "Male": df[df["sex_female"] == 0].shape[0] / df.shape[0],
         "Female": df[df["sex_female"] == 1].shape[0] / df.shape[0]}
+    demo["eng_prof"] = {
+        "Limited Proficiency": df[df["eng_prof"] == 0].shape[0] / df.shape[0],
+        "Proficient": df[df["eng_prof"] == 1].shape[0] / df.shape[0]}
+    demo["private_insurance"] = {
+        "Medicare/Medicaid": df[df["private_insurance"] == 0].shape[0] / df.shape[0],
+        "Other": df[df["private_insurance"] == 1].shape[0] / df.shape[0]}
     return demo
 
 
@@ -24,7 +30,7 @@ def print_demo(demo):
             demo_str += f"{key}: ["
             for key2, value2 in value.items():
                 demo_str += f"{key2}: {round(value2*100,1)}%, "
-            demo_str = demo_str[:-2] + "], "
+            demo_str = demo_str[:-2] + "]\n "
         else:
             demo_str += f"{key}: {round(value*100,1)}%, "
     demo_str = demo_str[:-2]
