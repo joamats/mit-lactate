@@ -31,8 +31,8 @@ def get_table2(dfs):
     # Create a table with the following columns:
     # mortality_in, los_icu_hours, mech_vent_overall_yes, rrt_overall_yes, vasopressor_overall_yes, transfusion_overall_yes, fluids_overall_yes
     # the rows will be the bins of lactate_day1
-    cols = ["mortality_in", "los_icu_hours", "mech_vent_overall_yes", "rrt_overall_yes",
-            "vasopressor_overall_yes", "transfusion_overall_yes", "fluids_overall_yes"]
+    cols = ["mortality_in", "los_icu", "mech_vent_overall", "rrt_overall",
+            "vasopressor_overall", "transfusion_overall", "fluids_volume_norm_by_los_icu"]
     table = pd.DataFrame(columns=cols, index=dfs.keys())
     for key in dfs.keys():
         # For table 1, just report the mean and standard deviation of each column
@@ -69,15 +69,15 @@ def main(args):
     # create the table
     table = get_table2(dfs)
     # save the table
-    table.to_csv(args.output)
+    table.T.to_csv(args.output)
 
 
 if __name__ == "__main__":
     # parse the arguments
     parser = ArgumentParser()
     parser.add_argument(
-        "-i", "--input", default='../../data/cohort_eICU_lac1.csv', help="input csv file")
+        "-i", "--input", default='../../data/cohorts/MIMIC_lac1.csv', help="input csv file")
     parser.add_argument(
-        "-o", "--output", default='../../results/table2/table2_cohort_eICU.csv', help="output csv file")
+        "-o", "--output", default='../../results/table2/table2_MIMIC_lac1.csv', help="output csv file")
     args = parser.parse_args()
     main(args)
