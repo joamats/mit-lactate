@@ -17,8 +17,8 @@ demo2 = print_demo(get_demography(df2))
 print(f"{len(df2)} stays with sepsis and lactate day 1 \n({demo2})\n")
 
 
-
-df3 = df2.sort_values(by=["subject_id", "hadm_id", "hospstay_seq","icustay_seq"], ascending=True).groupby('subject_id').apply(lambda group: group.iloc[0, 1:])
+df3 = df2.sort_values(by=["subject_id", "hadm_id", "hospstay_seq", "icustay_seq"],
+                      ascending=True).groupby('subject_id').apply(lambda group: group.iloc[0, 1:])
 print(f"Removed {len(df2) - len(df3)} recurrent stays")
 demo3 = print_demo(get_demography(df3))
 print(f"{len(df3)} adults with sepsis, lactate day 1 & 2, LoS > 1 day, adult patient, 1 stay per patient \n({demo3})\n")
@@ -29,4 +29,3 @@ demo4 = print_demo(get_demography(df4))
 print(f"{len(df3)} stays with sepsis, lactate day 1, and LoS > 1 day \n({demo4})\n")
 
 df4.to_csv('data/cohorts/MIMIC_lac1.csv')
-
