@@ -13,7 +13,7 @@ def get_binned_data(df):
     """
     # switch this to lactate_day2 if you want to use that instead
     lacs = df.lactate_day1
-    races = ["White", "Black"]
+    races = ["White", "Black", "Hispanic", "Asian", "Other"]
     bins = [0, 2, 4, 6]
     dfs = {}
     for race in races:
@@ -31,21 +31,26 @@ def get_table2(dfs):
     # Create a table with the following columns:
     # mortality_in, los_icu_hours, mech_vent_overall_yes, rrt_overall_yes, vasopressor_overall_yes, transfusion_overall_yes, fluids_overall_yes
     # the rows will be the bins of lactate_day1
-    cols = ["mortality_in", "los_icu_hours", "mech_vent_overall_yes", "rrt_overall_yes",
-            "vasopressor_overall_yes", "transfusion_overall_yes", "fluids_overall_yes"]
+    cols = ["N", "mortality_in", "mortality_90", "los_icu", "los_hospital", "mech_vent_overall", "rrt_overall",
+            "vasopressor_overall", "transfusion_overall", "fluids_volume_norm_by_los_icu", "MV_init_offset_abs"]
     table = pd.DataFrame(columns=cols, index=dfs.keys())
     for key in dfs.keys():
+        # add the number of patients in each bin
+        table.loc[key]["N"] = len(dfs[key])
         # For table 1, just report the mean and standard deviation of each column
-        for col in cols:
+        for col in cols[1:]:
             mean = dfs[key][col].mean()
-            std = dfs[key][col].std()
+            # std = dfs[key][col].std()
+            # 95% confidence interval
+            std = stats.t.interval(0.95, df=len(dfs[key][col])-1,
+                                   loc=dfs[key][col].mean(),
+                                   scale=dfs[key][col].sem())
             if col == "los_icu_hours":
                 # round the mean and standard deviation
-                table.loc[key][col] = f"{round(mean/24, 1)} ({round(std/24, 1)})"
+                table.loc[key][col] = f"{round(mean/24, 1)} ({round(std[0]/24, 1)}-{round(std[1]/24, 1)})"
             else:
                 # round the mean and standard deviation to 2 decimal places
-                table.loc[key][col] = f"{round(mean, 2)} ({round(std, 2)})"
-
+                table.loc[key][col] = f"{round(mean, 2)} ({round(std[0], 2)}-{round(std[1], 2)})"
         # UNCOMMENT THIS SECTION TO USE THE MEDIAN AND INTERQUARTILE RANGE INSTEAD OF THE MEAN AND STANDARD DEVIATION
         # # for each column, either report the mean and standard deviation, or the median and interquartile range, based on the distribution of the data
         # # if the data is normally distributed, use the mean and standard deviation
@@ -68,16 +73,16 @@ def main(args):
     dfs = get_binned_data(df)
     # create the table
     table = get_table2(dfs)
-    # save the table
-    table.to_csv(args.output)
+    # save transposed the table
+    table.T.to_csv(args.output)
 
 
 if __name__ == "__main__":
     # parse the arguments
     parser = ArgumentParser()
     parser.add_argument(
-        "-i", "--input", default='../../data/cohort_eICU_lac1.csv', help="input csv file")
+        "-i", "--input", default='../../data/cohorts/MIMIC_lac1.csv', help="input csv file")
     parser.add_argument(
-        "-o", "--output", default='../../results/table2/table2_cohort_eICU.csv', help="output csv file")
+        "-o", "--output", default='../../results/table2/table2_MIMIC_lac1.csv', help="output csv file")
     args = parser.parse_args()
     main(args)

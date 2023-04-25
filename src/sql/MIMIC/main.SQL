@@ -151,9 +151,8 @@ SELECT
 -- treatments
   , fluids_volume
   , fluids_volume_norm_by_los_icu
-  , transfusion_yes
-  , insulin_yes
-
+  , CASE WHEN (transfusion_yes IS NOT NULL) THEN transfusion_yes ELSE 0 END AS transfusion_overall
+  , CASE WHEN (insulin_yes IS NOT NULL) THEN insulin_yes ELSE 0 END AS insulin_overall
   , InvasiveVent.InvasiveVent_hr
   , Oxygen.Oxygen_hr
   , HighFlow.HighFlow_hr
