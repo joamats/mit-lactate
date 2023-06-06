@@ -8,6 +8,9 @@ CREATE TABLE `db_name.my_eICU.dummy` AS
 -- derived -> ventilation_events
 -- original --> note, respiratorycharting, respiratorycare, notes, nursecare
 
+
+-- why missing values in event?
+
 WITH resp_chart AS (
 
   SELECT 

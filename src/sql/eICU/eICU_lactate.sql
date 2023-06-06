@@ -390,32 +390,42 @@ SELECT DISTINCT
     END AS mortality_in 
   , yug.hospitaldischargeoffset / 60 AS los_icu_hours
 
-  -- Treatments
+
+-- Treatments and their offsets
   , CASE 
       WHEN 
            yug.vent IS TRUE
-        OR vent_1 > 0
-        OR vent_2 > 0
-        OR vent_3 > 0
-        OR vent_4 > 0
-        OR vent_5 > 0
+        OR vent_yes > 0
       THEN 1
       ELSE 0
-    END AS mech_vent_overall_yes
-  
-  , CASE WHEN rrt_overall_yes = 1 THEN 1 ELSE 0 END AS rrt_overall_yes
-  , rrt_start_delta
-  
+    END AS mech_vent
+
+  , CASE 
+      WHEN 
+           yug.rrt IS TRUE
+        OR rrt_yes > 0
+      THEN 1
+      ELSE 0
+    END AS rrt
+
   , CASE 
       WHEN 
            yug.vasopressor IS TRUE
-        OR pressor_1 > 0
-        OR pressor_2 > 0 
-        OR pressor_3 > 0 
-        OR pressor_4 > 0 
+        OR vp_yes > 0
       THEN 1
       ELSE 0
-    END AS vasopressor_overall_yes
+    END AS vasopressor
+  
+  -- , vent_start_offset
+  -- , rrt_start_offset
+  -- , vp_start_offset
+
+-- Convert offset from minutes to fraction of day
+  , SAFE_DIVIDE(vent_start_offset,(24*60)) AS MV_init_offset_d_abs -- convert from minutes to days, in MIMIC it's from hours to days
+  , SAFE_DIVIDE(rrt_start_offset,(24*60)) AS RRT_init_offset_d_abs
+  , SAFE_DIVIDE(vp_start_offset,(24*60)) AS VP_init_offset_d_abs
+ -- , SAFE_DIVIDE(SAFE_DIVIDE(vent_duration,(24*60)),yug.los_icu) AS MV_time_perc_of_stay
+ -- , SAFE_DIVIDE(SAFE_DIVIDE(vp_time_d,(24*60)),yug.los_icu) AS VP_time_perc_of_stay -- omitted as not easily feasible in eICU
 
   -- Blood Transfusion
   , CASE WHEN transfusion_overall_yes = 1 THEN 1 ELSE 0 END AS transfusion_overall_yes
