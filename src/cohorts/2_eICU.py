@@ -42,4 +42,3 @@ print(f"Removed {len(df5) - len(df6)} stays without lactate day 2")
 demo6 = print_demo(get_demography(df6))
 print(f"{len(df6)} stays with sepsis and lactate day 1 & 2 \n({demo6})\n")
 df6.to_csv(os.path.join(root_dir, 'data/cohorts', 'cohort_eICU_lac1_lac2.csv'))
-
