@@ -1,0 +1,57 @@
+dag {
+admit_source [pos="-0.764,-0.694"]
+admit_type [pos="-1.152,-0.548"]
+age [pos="-1.564,-0.364"]
+cardiac_output [pos="0.019,0.384"]
+charlson_ci [pos="-1.229,0.145"]
+cirrhosis [pos="-1.594,0.339"]
+ckd [pos="-1.544,0.714"]
+creatinine [pos="0.922,-0.399"]
+fluid_balance [pos="0.024,-0.250"]
+heart_failure [pos="-1.584,-0.011"]
+hemoglobin [pos="0.452,-0.943"]
+infection [pos="-1.025,-0.276"]
+lactate_frequency [outcome,pos="1.148,0.734"]
+lactate_value [outcome,pos="0.295,0.912"]
+los [outcome,pos="1.225,0.002"]
+mortality [outcome,pos="1.222,0.378"]
+race [exposure,pos="-0.868,0.815"]
+rrt [pos="1.183,-0.749"]
+sepsis_severity [pos="-0.386,-0.399"]
+sex [exposure,pos="-1.144,0.588"]
+sofa [pos="0.367,0.381"]
+transfused [pos="0.111,-0.658"]
+urine_output [pos="0.489,-0.399"]
+vasopressors [pos="-0.108,0.948"]
+ventilated [pos="0.693,0.857"]
+weight [pos="-0.505,0.867"]
+admit_source -> admit_type
+admit_source -> sepsis_severity
+admit_type -> sepsis_severity
+age -> charlson_ci
+cardiac_output -> lactate_value
+cardiac_output -> sofa
+cardiac_output -> urine_output
+charlson_ci -> sepsis_severity
+cirrhosis -> charlson_ci
+ckd -> charlson_ci
+creatinine -> rrt
+creatinine -> sofa
+fluid_balance -> cardiac_output
+heart_failure -> charlson_ci
+infection -> sepsis_severity
+race -> sepsis_severity
+rrt -> los
+sepsis_severity -> cardiac_output
+sex -> sepsis_severity
+sofa -> lactate_frequency
+sofa -> los
+sofa -> mortality
+transfused -> fluid_balance
+transfused -> hemoglobin
+urine_output -> creatinine
+urine_output -> rrt
+vasopressors -> cardiac_output
+ventilated -> sofa
+weight -> sepsis_severity
+}
