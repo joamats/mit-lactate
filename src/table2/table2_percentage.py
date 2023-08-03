@@ -1,6 +1,6 @@
 def get_table2(dfs):
-    cols = ["N", "mortality_in", "mortality_90", "los_icu", "los_hospital", "mech_vent_overall", "rrt_overall",
-            "vasopressor_overall", "transfusion_overall", "MV_init_offset_abs"]
+    cols = ["N", "mortality_in", "mortality_90", "los_icu", "los_hospital", "mv_24hr", "vp_24hr",
+            "rrt_72hr"]
     table = pd.DataFrame(columns=cols, index=dfs.keys())
     for key in dfs.keys():
         table.loc[key]["N"] = len(dfs[key])
