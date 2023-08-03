@@ -5,8 +5,13 @@ from argparse import ArgumentParser
 from scipy import stats
 from pathlib import Path
 
+# Read the different axes from txt
+with open("config/axis.txt", "r") as f:
+    axes = f.read().splitlines()
+axes.remove("axis")
 
-def get_binned_data(df):
+
+def get_binned_data(df, axis):
     """
     split the data into bins by lactate, 
     bins: All, 0-2, 2-4, 4-6, >6
@@ -16,17 +21,22 @@ def get_binned_data(df):
     lacs = df.lactate_day1
 
     #Mapping the race groups as white and non-white
-    races = ["White", "Non-white"]
+    #races = ["White", "Non-white"]
     df['race_group']=df['race_group'].map({'White':'White', 'Black': 'Non-white', 'Asian': 'Non-white', 'Hispanic':'Non-white'})
-    
+    df['sex_female']=df['sex_female'].map({1:'Female', 0:'Male'})
+    df['eng_prof']=df['eng_prof'].map({1:'Proficient in English', 0:'Not proficient in English'})
+  
     bins = [0, 2, 4, 6]
     dfs = {}
-    for race in races:
-        dfs[f"All {race}"] = df[df["race_group"] == race]
+    axis_values=df[axis].unique()
+    
+    for a in axis_values:
+        dfs[f"All\n{a}"] = df[df[axis] == a]
         for i in range(len(bins)-1):
-            dfs[f"{bins[i]}-{bins[i+1]} {race}"] = df[df["race_group"]
-                                                      == race][(lacs >= bins[i]) & (lacs < bins[i+1])]
-        dfs[f">6 {race}"] = df[df["race_group"] == race][lacs >= bins[-1]]
+            dfs[f"{bins[i]}-{bins[i+1]}\n{a}"] = df[df[axis]
+                                                      == a][(lacs >= bins[i]) & (lacs < bins[i+1])]
+        dfs[f">6\n{a}"] = df[df[axis] == a][lacs >= bins[-1]]
+        
     # sort the dictionary by key
     dfs = {k: dfs[k] for k in sorted(dfs.keys())}
     return dfs
@@ -35,8 +45,8 @@ def get_binned_data(df):
 def get_table2(dfs):
     # Create a table with the following columns:
     # the column names will be the bins of lactate_day1
-    cols = ["N", "mortality_in", "mortality_90", "los_icu", "los_hospital", "mech_vent_overall", "rrt_overall",
-            "vasopressor_overall", "transfusion_overall", "MV_init_offset_abs"]
+
+    cols = ["N", "mortality_in", "mortality_90", "los_icu", "los_hospital", "mv_24hr", "vp_24hr", "rrt_72hr"]
     table = pd.DataFrame(columns=cols, index=dfs.keys())
     for key in dfs.keys():
         # add the number of patients in each bin
@@ -70,11 +80,12 @@ def get_table2(dfs):
     return table
 
 
-def main(args):
+def main(args, axis):
     # read in the data
     df = pd.read_csv(args.input)
     # get the binned data (binned by lactate and race)
-    dfs = get_binned_data(df)
+    #setting="table2_MIMIC_"+str(axis)
+    dfs = get_binned_data(df, axis)
     # create the table
     table = get_table2(dfs)
     # save transposed the table
@@ -83,10 +94,14 @@ def main(args):
 
 if __name__ == "__main__":
     # parse the arguments
-    parser = ArgumentParser()
-    parser.add_argument(
-        "-i", "--input", default=Path('data/cohorts/cohort_MIMIC_lac1.csv').absolute(), help="input csv file")
-    parser.add_argument(
-        "-o", "--output", default=Path("results/table2/table2_MIMIC_lac1.csv").absolute(), help="output csv file")
-    args = parser.parse_args()
-    main(args)
+    for axis in axes:
+        parser = ArgumentParser()
+        parser.add_argument(
+        "-i", "--input", default=Path('data\cohorts\cohort_MIMIC_lactate_1.csv').absolute(), help="input csv file")
+    
+        setting=str(axis)
+        parser.add_argument(
+        "-o", "--output", default=Path(f"results/table2/table2_MIMIC_{setting}.csv").absolute(), help="output csv file")
+    
+        args = parser.parse_args()
+        main(args, axis)
