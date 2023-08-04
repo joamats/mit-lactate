@@ -6,7 +6,7 @@ Presentation: https://docs.google.com/presentation/d/1-TKk9ce1XwDHM6TvKuICP6sDfu
 
 ### Research Question
 
-Is the relationship between lactate and mortality different across races in septic patients? 
+Is the relationship between lactate and mortality different across races in septic patients?
 
 ### Data
 
@@ -41,7 +41,6 @@ At every step, we monitor the following demographics to see who is being exclude
 - Sex
 - English proficiency (MIMIC only)
 
-
 ## How to run this project?
 
 ### 1. Get Access to MIMIC and eICU
@@ -61,7 +60,6 @@ Make sure to place them in `data/MIMIC_data.csv` and `data/eICU_data.csv`
 To get the working cohorts, run `python3 src/cohorts/2_MIMIC.py` and `python3 src/cohorts/2_eICU.py`.
 Your files will show up in the folder `data/cohorts` (make sure to create in advance).
 The excluded patients at each step will also be displayed, for the sake of reporting and sampling bias check.
-
 
 ## Integration with Google Cloud Platform (GCP)
 
@@ -86,17 +84,7 @@ python3 src/cohorts/1_get_data.py --sql "src/sql/MIMIC/main.sql" --destination "
 
 This will create the file `data/MIMIC_data.csv`
 
-#### eICU-CRD
-
-The rationale for eICU-CRD is similar. Run the following commands:
-
-```sh
-python3 src/cohorts/1_get_data.py --sql "src/sql/eICU/eICU_lactate.sql" --destination "data/eICU_data.csv"
-```
-
-This creates the file `data/eICU_data.csv`
-
-## How to contribute?
+#### How to contribute?
 
 We are actively working on this project.
 Feel free to raise questions opening an issue, send an email to jcmatos@mit.edu or to fork this project and submit a pull request!
