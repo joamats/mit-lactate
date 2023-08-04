@@ -1,5 +1,5 @@
 * Read in data
- cd "/Users/Tristan/Documents/Projekte/Boston Celi/1 Lactate Project/mit-lactate/data/cohorts/"
+ cd "data/cohorts/"
  import delimited "data/cohorts/cohort_MIMIC_lac1_entire_los.csv", clear
 
 encode race_group, gen(race_group2)
@@ -17,7 +17,7 @@ major_surgery charlson_comorbidity_index sofa pneumonia uti biliary skin ///
 i.race_group2#eng_prof
 estimates store interactions
 
-cd "/Users/Tristan/Documents/Projekte/Boston Celi/1 Lactate Project/mit-lactate/src/cohorts/log_reg/Stata/"
+cd "src/cohorts/log_reg/Stata/"
 etable, estimates(simple interactions) mstat(N) mstat(r2_a) export(interactions.pdf, replace) cstat(_r_b) cstat(_r_ci)
 
 /* keep confounders in case needed
