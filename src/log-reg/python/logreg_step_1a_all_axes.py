@@ -15,12 +15,7 @@ with open("config/axis.txt", "r") as f:
 axes.remove("axis")
 
 # Input data and data preprocessing
-data = pd.read_csv("data/cohorts/cohort_MIMIC_no_lactate.csv")
-data['lactate_overall_y/n'] = np.where((data['lactate_freq_day1'].notnull()) & 
-                                       (data['lactate_freq_day2'].notnull()), 1, 0)
-data['lactate_freq_LOS'].fillna(0, inplace=True) #drop null values instead of filling with 0s, move to cohort selection
-data['renal'].fillna(0, inplace=True) #move to cohort script
-data['language'].replace('?', 'No English', inplace=True) #move to cohort selection
+data = pd.read_csv("data/cohorts/cohort_MIMIC_entire_los.csv")
 
 # One-hot encoding all categorical columns
 col='anchor_year_group'
@@ -86,7 +81,7 @@ for a in axes:
         if col in X.columns:
             X.drop(col, axis=1, inplace=True)
             
-        y = subset_data['lactate_overall_y/n']
+        y = subset_data['lactate_overall_yes_no']
 
         # To ensure that the train and test sets are split based on the number of samples for each value in 
         # the current axis
