@@ -1,0 +1,36 @@
+dag {
+"English Proficiency" [exposure,pos="-0.600,0.366"]
+"Lactate Measurement" [outcome,pos="-0.210,-0.652"]
+"Urine Output" [pos="-0.696,-0.709"]
+Race [exposure,pos="-0.844,0.279"]
+SOFA [pos="-0.467,-0.397"]
+age [pos="-1.448,-0.381"]
+cardiac_output [pos="0.080,-0.384"]
+charlson_ci [pos="-1.058,-0.384"]
+creatinine [pos="0.922,-0.399"]
+lactate_frequency [outcome,pos="1.148,0.734"]
+los [outcome,pos="1.225,0.002"]
+mortality [outcome,pos="1.222,0.378"]
+rrt [pos="1.183,-0.749"]
+sex [exposure,pos="-1.055,0.105"]
+sofa [pos="0.367,0.381"]
+urine_output [pos="0.489,-0.399"]
+"English Proficiency" -> SOFA
+"Urine Output" -> SOFA
+Race -> SOFA
+SOFA -> "Lactate Measurement"
+SOFA -> cardiac_output
+age -> charlson_ci
+cardiac_output -> sofa
+cardiac_output -> urine_output
+charlson_ci -> SOFA
+creatinine -> rrt
+creatinine -> sofa
+rrt -> los
+sex -> SOFA
+sofa -> lactate_frequency
+sofa -> los
+sofa -> mortality
+urine_output -> creatinine
+urine_output -> rrt
+}
