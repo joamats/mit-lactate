@@ -1,18 +1,18 @@
 WITH lac AS (
 
   SELECT
-      chartevents.*
-    , icustays.intime
+      labevents.*
+    , icustays.intime, icustays.stay_id
     , ROW_NUMBER() OVER(PARTITION BY icustays.stay_id ORDER BY DATE_DIFF(charttime, intime, MINUTE) ASC) AS total_seq
     , CASE WHEN DATE_DIFF(charttime, intime, MINUTE) >= -1440 AND DATE_DIFF(charttime, intime, MINUTE) < 1440 THEN 1
            WHEN DATE_DIFF(charttime, intime, MINUTE) >= 1440  AND DATE_DIFF(charttime, intime, MINUTE) < 1440*2 THEN 2
            ELSE NULL
       END AS day
 
-  FROM physionet-data.mimiciv_icu.chartevents
+  FROM physionet-data.mimiciv_hosp.labevents
   LEFT JOIN physionet-data.mimiciv_icu.icustays 
-  ON chartevents.stay_id = icustays.stay_id
-  WHERE itemid = 225668
+  ON labevents.hadm_id = icustays.hadm_id
+  WHERE itemid in (50813, 52442, 53154)
   AND valuenum < 100
   AND valuenum IS NOT NULL
 )
