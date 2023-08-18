@@ -9,6 +9,7 @@ run_tmle <- function(data, treatment, confounders, outcome, SL_libraries,
     A <- data[, treatment]
     Y <- data[, outcome]
     
+    print(unique(A))
     result <- tmle(
                 Y = Y,
                 A = A,
@@ -36,15 +37,13 @@ run_tmle <- function(data, treatment, confounders, outcome, SL_libraries,
 }
 
 # Main
-outcomes <- c("lactate_day1_yes_no") # other outcomes
-treatments <- read.delim("config/treatments.txt")
+outcome <- c("lactate_day1_yes_no") # other outcomes
 # SL_libraries <- read.delim("config/SL_libraries_SL.txt") # or use only base libraries, see below
 SL_libraries <- read.delim("config/SL_libraries_base.txt") # or read.delim("config/SL_libraries_SL.txt")
-axis <- read.delim("config/axis.txt")
-print(axis)
+axis <- readLines("config/axis.txt")
+axis <- axis[axis != 'axis'] # remove header
 data <- read.csv("data/cohorts/cohort_MIMIC_lac1.csv")
 axis_values <- unique(data$gender)
-print(axis_values)
 
 for (a in axis) {
    
@@ -57,9 +56,7 @@ for (a in axis) {
     confounders <- read.delim(paste0("config/confounders.txt"))
  
     # Creating a list to store the unique values for each axis
-    print(a)
-    axis_values <- unique(data$a)
-    print(axis_values)
+    axis_values <- unique(data[[a]])
 
     # Setting the reference value for each axis and removing that axis from the confounders list
     if (a == 'race_group') {
@@ -68,14 +65,22 @@ for (a in axis) {
         conf_copy <- confounders[confounders != 'race_group']
 
     } else if (a == 'gender') {
+        print("test g")
         reference <- 'M'
+        print(reference)
         axis_values <- axis_values[axis_values != reference]
+         print(axis_values)
         conf_copy <- confounders[confounders != 'sex_female']
+        print(conf_copy)
 
     } else {
+        print("test L")
         reference <- 'ENGLISH'
+        print(reference)
         axis_values <- axis_values[axis_values != reference]
+        print(axis_values)
         conf_copy <- confounders[confounders != 'eng_prof']
+        print(conf_copy)
     }
 
     # Encoding columns
@@ -99,7 +104,7 @@ for (a in axis) {
                             "g_weights")
 
     # Run TMLE
-    results_df <- run_tmle(data, treatment, model_confounders, outcome, 
+    results_df <- run_tmle(data, a, conf_copy, outcome, 
                             SL_libraries, results_df)
 
     # Save Results

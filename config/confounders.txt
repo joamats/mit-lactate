@@ -32,7 +32,6 @@ po2_min
 pco2_max
 ph_min
 lactate_max
-lactate_freq_LOS
 glucose_max
 sodium_min
 potassium_max
