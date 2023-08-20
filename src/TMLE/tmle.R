@@ -8,8 +8,6 @@ run_tmle <- function(data, treatment, confounders, outcome, SL_libraries,
     # Subset data to remove pts with NA in the race group
     data <- data[!is.null(data[[treatment]]), ]
 
-     print(nrow(data))
-
     W <- data[, confounders]
     A <- data[, treatment]
     Y <- data[, outcome]
@@ -55,7 +53,6 @@ for (a in axis) {
     # Read Data for this database and cohort
     data <- read.csv("data/cohorts/cohort_MIMIC_entire_los.csv")
     
-    print(nrow(data))
     # Factorize variables
     confounders <- read.delim(paste0("config/confounders.txt"))
  
@@ -69,56 +66,50 @@ for (a in axis) {
         conf_copy <- confounders[confounders != 'race_group']
 
     } else if (a == 'gender') {
-        print("test g")
         reference <- 'M'
-        print(reference)
         axis_values <- axis_values[axis_values != reference]
-         print(axis_values)
         conf_copy <- confounders[confounders != 'sex_female']
-        print(conf_copy)
 
     } else {
-        print("test L")
         reference <- 'ENGLISH'
-        print(reference)
         axis_values <- axis_values[axis_values != reference]
-        print(axis_values)
         conf_copy <- confounders[confounders != 'eng_prof']
-        print(conf_copy)
     }
 
     # Encoding columns
     for (col in axis_values) {
-    print("encoding loop")  
-        print(col)
+        print(paste0("Subgroup: ", col))
+
+        data_subset <- data 
+        data_subset[[col]] <- ifelse(data_subset[[a]] == col, 1,
+                           ifelse(data_subset[[a]] == reference, 0, NA))
+        data_subset <- data_subset %>% drop_na(col)
+
+        # Dataframe to hold results
+        results_df <- data.frame(matrix(ncol=10, nrow=0))
+        colnames(results_df) <- c(
+                                "outcome",
+                                "tx_demographic",
+                                "OR",
+                                "i_ci",
+                                "s_ci",
+                                "pvalue",
+                                "n",
+                                "SL_libraries",
+                                "Q_weights",
+                                "g_weights")
+
+        # Run TMLE
+        results_df <- run_tmle(data_subset, col, conf_copy, outcome, 
+                                SL_libraries, results_df)
         
-       # data <- data %>% mutate(col = ifelse(race_group=="White", 1, 0))
+        # you would need to restructre the loops to get the results into one df and use this command
+        #     results_df <- bind_rows(results_df, results_df)
+        # and save in one file
+        
+        # Save Results
+        write.csv(results_df, paste0("results/tmle/tmle_", col, ".csv"))
 
-        data[[col]] <- ifelse(data[[a]] == col, 1,
-                           ifelse(data[[a]] == reference, 0, NA))
-     print(unique(data[[col]]))         
     }
-    print(colnames(data))
-    print(nrow(data))
 
-    # Dataframe to hold results
-    results_df <- data.frame(matrix(ncol=10, nrow=0))
-    colnames(results_df) <- c(
-                            "outcome",
-                            "tx_demographic",
-                            "OR",
-                            "i_ci",
-                            "s_ci",
-                            "pvalue",
-                            "n",
-                            "SL_libraries",
-                            "Q_weights",
-                            "g_weights")
-
-    # Run TMLE
-    results_df <- run_tmle(data, col, conf_copy, outcome, 
-                            SL_libraries, results_df)
-
-    # Save Results
-    write.csv(results_df, paste0("results/tmle/tmle_", a, ".csv"))
 }
