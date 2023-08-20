@@ -4,10 +4,12 @@ library(tidyverse)
 # run TMLE 
 run_tmle <- function(data, treatment, confounders, outcome, SL_libraries,
                     results_df) {
-    # Subset data
-    print(unique(data[[treatment]]))
+
+    # Subset data to remove pts with NA in the race group
     data <- data[!is.null(data[[treatment]]), ]
-    print(unique(data[[treatment]]))
+
+     print(nrow(data))
+
     W <- data[, confounders]
     A <- data[, treatment]
     Y <- data[, outcome]
@@ -44,7 +46,6 @@ outcome <- c("lactate_day1_yes_no") # other outcomes
 SL_libraries <- read.delim("config/SL_libraries_base.txt") # or read.delim("config/SL_libraries_SL.txt")
 axis <- readLines("config/axis.txt")
 axis <- axis[axis != 'axis'] # remove header
-data <- read.csv("data/cohorts/cohort_MIMIC_entire_los.csv")
 axis_values <- unique(data$gender)
 
 for (a in axis) {
@@ -52,8 +53,9 @@ for (a in axis) {
     print(paste0("Demographic: ", a))
 
     # Read Data for this database and cohort
-    data <- read.csv("data/cohorts/cohort_MIMIC_lac1.csv")
-
+    data <- read.csv("data/cohorts/cohort_MIMIC_entire_los.csv")
+    
+    print(nrow(data))
     # Factorize variables
     confounders <- read.delim(paste0("config/confounders.txt"))
  
@@ -97,6 +99,7 @@ for (a in axis) {
      print(unique(data[[col]]))         
     }
     print(colnames(data))
+    print(nrow(data))
 
     # Dataframe to hold results
     results_df <- data.frame(matrix(ncol=10, nrow=0))
