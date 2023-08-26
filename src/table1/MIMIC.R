@@ -159,7 +159,8 @@ tbl1 <- table1(~ sex_female + admission_age+binary_race + SOFA + charlson_comorb
                render.missing=NULL,
                topclass="Rtable1-grid Rtable1-shade Rtable1-times",
                render.categorical=render.categorical,
-               render.strat=render.strat
+               render.strat=render.strat, 
+               render.continuous=c(.="Mean (SD)", .="Median (Q1, Q3)")
 )
 
 
