@@ -12,16 +12,16 @@ df$sex_female <- factor(df$sex_female, levels=c(1,0), labels=c("Female", "Male")
 label(df$sex_female) <- "Sex"
 
 # Age
-#label(df$admission_age) <- "Age overall"
-#units(df$admission_age) <- "years"
+label(df$admission_age) <- "Age overall"
+units(df$admission_age) <- "years"
 
 
-df$age_ranges <- df$admission_age
-df$age_ranges[df$admission_age >= 18 & df$admission_age <= 44] <- "18 - 44"
-df$age_ranges[df$admission_age >= 45 & df$admission_age <= 64] <- "45 - 64"
-df$age_ranges[df$admission_age >= 65 & df$admission_age <= 74] <- "65 - 74"
-df$age_ranges[df$admission_age >= 75 & df$admission_age <= 84] <- "75 - 84"
-df$age_ranges[df$admission_age >= 85] <- "85 and higher"
+#df$age_ranges <- df$admission_age
+#df$age_ranges[df$admission_age >= 18 & df$admission_age <= 44] <- "18 - 44"
+#df$age_ranges[df$admission_age >= 45 & df$admission_age <= 64] <- "45 - 64"
+#df$age_ranges[df$admission_age >= 65 & df$admission_age <= 74] <- "65 - 74"
+#df$age_ranges[df$admission_age >= 75 & df$admission_age <= 84] <- "75 - 84"
+#df$age_ranges[df$admission_age >= 85] <- "85 and higher"
 
 #label(df$age_ranges) <- "Age by group"
 #units(df$age_ranges) <- "years"
@@ -79,7 +79,7 @@ label(df$lactate_freq_day1) <- "No. of Lactate Measurements Day 1"
 
 label(df$lactate_day2) <- "Lactate Day 2"
 units(df$lactate_day2) <- "mmol/L"
-#label(df$lactate_freq_day2) <- "No. Measurements of Lactate in Day 2"
+label(df$lactate_freq_day2) <- "No. Measurements of Lactate in Day 2"
 
 # Hemoglobin
 label(df$hemoglobin_min) <- "Min. Hemoglobin (entire stay)"
@@ -147,12 +147,12 @@ render.strat <- function (label, n, ...) {
 }
 
 # Create Table1 Object
-tbl1 <- table1(~ sex_female +binary_race + charlson_comorbidity_index +
-                 lactate_day1 + lactate_freq_day1 +
+tbl1 <- table1(~ sex_female + admission_age+binary_race + SOFA + charlson_comorbidity_index +
+                 lactate_day1 + lactate_day2 + lactate_freq_day1 + lactate_freq_day2 +
                  los_icu + hemoglobin_min +
                  mech_vent_overall +
                  rrt_overall +
-                 vasopressor_overall +
+                 vasopressor_overall + transfusion_overall +
                 fluids_volume 
                | binary_race,
                data=df,
@@ -164,4 +164,4 @@ tbl1 <- table1(~ sex_female +binary_race + charlson_comorbidity_index +
 
 
 # Convert to flextable
-t1flex(tbl1) %>% save_as_docx(path="results/table1/MIMIC_lac1_race_group.docx")
+t1flex(tbl1) %>% save_as_docx(path="results/table1/MIMIC_race_group.docx")
