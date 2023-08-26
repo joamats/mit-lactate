@@ -14,8 +14,8 @@ import os
 # get parent directory of this file
 script_dir = os.path.dirname(__file__)
 
-# get root directory of this project (one level up from this file)
-root_dir = os.path.abspath(os.path.join(script_dir, os.pardir))
+# get root directory of this project (two levels up from this file)
+root_dir = os.path.abspath(os.path.join(script_dir, os.pardir, os.pardir))
 
 # Read confounders from list in txt
 with open("config/some_confounders.txt", "r") as f:
@@ -28,7 +28,7 @@ df.head()
 
 print(df.describe())
 
-df_sub=df[df['lactate_freq_day1']<=10]
+df_sub=df[df['lactate_freq_day1']<=6]
 
 X = df_sub[confounders]
 y = df_sub['lactate_freq_LOS']
@@ -89,7 +89,7 @@ plt.ylim(0,10)
 plt.xlim(0,10)
 plt.show()
 
-fig1.savefig(os.path.join(root_dir, 'results/models', 'neg_bin_plot1_subset.png'))
+fig1.savefig(os.path.join(root_dir, 'results/neg_bin_reg', 'neg_bin_plot1_subset.png'))
 
 # Assuming you have the results from nb_training_results.summary2()
 # Replace the following line with the actual summary results from your model
@@ -121,23 +121,24 @@ coef_table.reset_index(inplace=True)
 print(coef_table)
 
 # Download as a CSV file
-coef_table.to_csv('results/models/negbin_exponentiated_CI_results_subset.csv', index=False)
+coef_table.to_csv('results/neg_bin_reg/negbin_exponentiated_CI_results_subset.csv', index=False)
 
 # Assuming you have the DataFrame 'coef_table' with columns: 'IRR', 'Lower_CI_exp', 'Upper_CI_exp'
 coef_table = coef_table.sort_values(by='Upper_CI_exp', ascending=True)
 
-fig2 = plt.figure(figsize=(10, len(coef_table) * 0.4))  # Adjust the figure size according to your preference
+fig2, ax2 = plt.subplots(figsize=(10, len(coef_table) * 0.4))  # Adjust the figure size according to your preference
+fig2.subplots_adjust(left=0.2)
 
 # Calculate the errors for error bars without taking the absolute value
 lower_errors = coef_table['IRR'] - coef_table['Lower_CI_exp']
 upper_errors = coef_table['Upper_CI_exp'] - coef_table['IRR']
 
 # Create the forest plot with error bars
-plt.errorbar(coef_table['IRR'], range(len(coef_table)), xerr=[lower_errors, upper_errors],
+plt.errorbar(coef_table['IRR'], coef_names, xerr=[lower_errors, upper_errors],
              linestyle='', marker='o', markersize=5, capsize=5, color='black')
 
 # Set the y-ticks and labels
-plt.yticks(range(len(coef_table)), coef_table.index)
+plt.yticks(range(len(coef_table)), coef_names)
 plt.axvline(x=1, color='red', linestyle='--', label='IRR = 1')
 
 # Set the labels for x and y axes
@@ -148,7 +149,7 @@ plt.xlim(0, 2)
 # Show the plot
 plt.show()
 
-fig2.savefig(os.path.join(root_dir, 'results/models', 'neg_bin_plot2_subset.png'))
+fig2.savefig(os.path.join(root_dir, 'results/neg_bin_reg', 'neg_bin_plot2_subset.png'))
 
 def calculate_vif(race_df):
     # Create a DataFrame to store the VIF values
@@ -163,4 +164,4 @@ vif_result = calculate_vif(X_train)
 # Rounding all values to two decimal places
 vif_result = vif_result.round(2)
 
-vif_result.to_csv('results/models/negbin_vif_result_subset.csv', index=False)
+vif_result.to_csv('results/neg_bin_reg/negbin_vif_result_subset.csv', index=False)

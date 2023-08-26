@@ -14,8 +14,8 @@ import os
 # get parent directory of this file
 script_dir = os.path.dirname(__file__)
 
-# get root directory of this project (one level up from this file)
-root_dir = os.path.abspath(os.path.join(script_dir, os.pardir))
+# get root directory of this project (two levels up from this file)
+root_dir = os.path.abspath(os.path.join(script_dir, os.pardir, os.pardir))
 
 # Read confounders from list in txt
 with open("config/confounders.txt", "r") as f:
@@ -88,7 +88,7 @@ plt.ylim(0,10)
 plt.xlim(0,10)
 plt.show()
 
-fig1.savefig(os.path.join(root_dir, 'results/models', 'neg_bin_plot1_penalized.png'))
+fig1.savefig(os.path.join(root_dir, 'results/neg_bin_reg', 'neg_bin_plot1_penalized.png'))
 
 # Assuming you have the results from nb_training_results.summary2()
 # Replace the following line with the actual summary results from your model
@@ -120,7 +120,7 @@ summary_table = summary_table.round(2)
 print(summary_table)
 
 # Download as a CSV file
-summary_table.to_csv('results/models/negbin_exponentiated_IRR_results_penalized.csv', index=False)
+summary_table.to_csv('results/neg_bin_reg/negbin_exponentiated_IRR_results_penalized.csv', index=False)
 
 # Assuming you have the DataFrame 'coef_table' with columns: 'IRR', 'Lower_CI_exp', 'Upper_CI_exp'
 #coef_table = coef_table.sort_values(by='Upper_CI_exp', ascending=True)
@@ -162,4 +162,4 @@ vif_result = calculate_vif(X_train)
 # Rounding all values to two decimal places
 vif_result = vif_result.round(2)
 
-vif_result.to_csv('results/models/negbin_vif_result_penalized.csv', index=False)
+vif_result.to_csv('results/neg_bin_reg/negbin_vif_result_penalized.csv', index=False)
