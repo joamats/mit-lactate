@@ -17,10 +17,6 @@ axes.remove("axis")
 # Input data and data preprocessing
 data = pd.read_csv("data/cohorts/cohort_MIMIC_entire_los.csv")
 
-# One-hot encoding all categorical columns
-col='anchor_year_group'
-data = pd.concat([data.drop(col, axis=1), pd.get_dummies(data[col], dtype=int)], axis=1)
-
 # Create dataframe to store results
 results_df = pd.DataFrame(columns=["Axis", "Demographic","OR","2.5%","97.5%", "N"])
 
@@ -76,12 +72,16 @@ for a in axes:
         # Compute OR based on all data
         X = subset_data[conf]
 
+        # One-hot encoding all categorical columns
+        col='anchor_year_group'
+        X = pd.concat([X.drop(col, axis=1), pd.get_dummies(X[col], dtype=int)], axis=1)
+
         # Dropping the race_group column for the sex and english proficiency axis modelling
         col='race_group'
         if col in X.columns:
             X.drop(col, axis=1, inplace=True)
             
-        y = subset_data['lactate_overall_yes_no']
+        y = subset_data['lactate_day1_yes_no']
 
         # To ensure that the train and test sets are split based on the number of samples for each value in 
         # the current axis
@@ -134,5 +134,6 @@ for a in axes:
                                                           "97.5%": [CI_upper],
                                                           "N": [len(data[data[val]==1])]})], 
                                                           ignore_index=True)
+
 # Save results 
 results_df.to_csv(f"results/models/{setting}.csv", index=False)
