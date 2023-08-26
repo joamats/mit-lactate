@@ -1,0 +1,26 @@
+Feature,VIF
+admission_age,20.11
+sex_female,1.82
+eng_prof,9.6
+private_insurance,1.87
+adm_elective,1.66
+major_surgery,2.5
+charlson_comorbidity_index,9.42
+SOFA,4.62
+hypertension_present,3.7
+heart_failure_present,1.92
+copd_present,1.42
+asthma_present,1.03
+cad_present,2.09
+ckd_stages,1.35
+fluids_volume_norm_by_los_icu,2.0
+pneumonia,1.1
+uti,1.01
+biliary,1.01
+skin,1.01
+Asian,1.13
+Black,1.18
+Hispanic,1.13
+2011 - 2013,1.63
+2014 - 2016,1.62
+2017 - 2019,1.45
