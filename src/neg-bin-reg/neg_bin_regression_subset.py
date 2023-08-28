@@ -18,7 +18,7 @@ script_dir = os.path.dirname(__file__)
 root_dir = os.path.abspath(os.path.join(script_dir, os.pardir, os.pardir))
 
 # Read confounders from list in txt
-with open("config/some_confounders.txt", "r") as f:
+with open("config/confounders.txt", "r") as f:
     confounders = f.read().splitlines()
 confounders.remove("confounder")
 
@@ -28,7 +28,7 @@ df.head()
 
 print(df.describe())
 
-df_sub=df[df['lactate_freq_day1']<=6]
+df_sub=df[df['lactate_freq_day1']<=8]
 
 X = df_sub[confounders]
 y = df_sub['lactate_freq_LOS']
