@@ -1,0 +1,2 @@
+"","outcome","tx_demographic","OR","i_ci","s_ci","pvalue","n","SL_libraries","Q_weights","g_weights"
+"1","lactate_day1_yes_no","Hispanic","0.849812337230458","0.784404663671899","0.920674037209915","6.81603039258637e-05","16918","SL.glm SL.mean","1 0","0.93859723585595 0.0614027641440503"
