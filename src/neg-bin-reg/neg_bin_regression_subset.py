@@ -28,7 +28,7 @@ df.head()
 
 print(df.describe())
 
-df_sub=df[df['lactate_freq_day1']<=8]
+df_sub=df[df['lactate_freq_day1']<-8]
 
 X = df_sub[confounders]
 y = df_sub['lactate_freq_LOS']
