@@ -26,10 +26,14 @@ confounders.remove("confounder")
 df = pd.read_csv('data/cohorts/cohort_MIMIC_entire_los.csv')
 df.head()
 
-print(df.describe())
+df.fillna(0, inplace=True)
+print(df.isna().sum())
+
+df['lactate_freq_normalized']=df['lactate_freq_whole']/df['los_icu'] # move to cohort selection
 
 X = df[confounders]
-y = df['lactate_freq_LOS']
+
+y = df['lactate_freq_normalized']
 
 #One-hot encoding all categorical columns
 categorical_col= ['race_group', 'anchor_year_group']

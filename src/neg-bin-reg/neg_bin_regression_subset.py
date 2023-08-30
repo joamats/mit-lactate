@@ -26,12 +26,16 @@ confounders.remove("confounder")
 df = pd.read_csv('data/cohorts/cohort_MIMIC_entire_los.csv')
 df.head()
 
-print(df.describe())
+df.fillna(0, inplace=True)
+print(df.isna().sum())
 
-df_sub=df[df['lactate_freq_day1']<=8]
+df['lactate_freq_normalized']=df['lactate_freq_whole']/df['los_icu'] # move to cohort selection
+df_sub = df[df['lactate_freq_normalized']<10]
 
 X = df_sub[confounders]
-y = df_sub['lactate_freq_LOS']
+
+y = df_sub['lactate_freq_normalized']
+
 
 #One-hot encoding all categorical columns
 categorical_col= ['race_group', 'anchor_year_group']
@@ -85,8 +89,8 @@ fig1.suptitle('Predicted versus actual counts using the Negative Binomial model'
 plt.scatter(actual_counts, predicted_counts)
 plt.xlabel('Actual Counts')
 plt.ylabel('Predicted Counts')
-plt.ylim(0,10)
-plt.xlim(0,10)
+#plt.ylim(0,10)
+#plt.xlim(0,10)
 plt.show()
 
 fig1.savefig(os.path.join(root_dir, 'results/neg_bin_reg', 'neg_bin_plot1_subset.png'))
