@@ -1,2 +1,2 @@
-"","outcome","tx_demographic","OR","i_ci","s_ci","pvalue","n","SL_libraries","Q_weights","g_weights"
-"1","lactate_day1_yes_no","Asian","0.903526513194881","0.835722181980704","0.97683198752878","0.0108047522369976","16763","SL.glm SL.mean","1 0","0.955656076131925 0.0443439238680754"
+,outcome,tx_demographic,OR,i_ci,s_ci,pvalue,n,SL_libraries,Q_weights,g_weights
+1,lactate_day1_yes_no,Asian,0.903526513194881,0.835722181980704,0.97683198752878,0.0108047522369976,16763,SL.glm SL.mean,1 0,0.955656076131925 0.0443439238680754

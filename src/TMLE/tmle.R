@@ -104,7 +104,7 @@ for (a in axis) {
                                 SL_libraries, results_df)
         
         # you would need to restructre the loops to get the results into one df and use this command
-        #     results_df <- bind_rows(results_df, results_df)
+        # results_df <- bind_rows(results_df, results_df)
         # and save in one file
         
         # Save Results
