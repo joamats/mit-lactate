@@ -1,0 +1,26 @@
+index,IRR,Lower_CI_exp,Upper_CI_exp
+admission_age,0.99,0.98,0.99
+sex_female,1.02,0.96,1.1
+eng_prof,0.51,0.46,0.56
+private_insurance,0.86,0.8,0.92
+adm_elective,0.55,0.49,0.61
+major_surgery,1.14,1.05,1.23
+charlson_comorbidity_index,1.01,1.0,1.03
+SOFA,1.1,1.09,1.11
+hypertension_present,1.03,0.95,1.11
+heart_failure_present,1.2,1.11,1.29
+copd_present,1.03,0.95,1.11
+asthma_present,0.76,0.55,1.05
+cad_present,1.14,1.06,1.23
+ckd_stages,0.99,0.96,1.02
+fluids_volume_norm_by_los_icu,1.0,1.0,1.0
+pneumonia,0.95,0.81,1.12
+uti,0.49,0.26,0.92
+biliary,1.0,0.59,1.7
+skin,0.56,0.21,1.51
+Asian,0.64,0.53,0.77
+Black,0.96,0.87,1.07
+Hispanic,0.65,0.55,0.77
+2011 - 2013,1.03,0.95,1.13
+2014 - 2016,1.09,1.0,1.2
+2017 - 2019,1.47,1.34,1.63

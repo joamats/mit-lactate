@@ -30,7 +30,7 @@ print(f"{len(df3)} adults with sepsis, lactate day 1 & 2, LoS > 1 day, adult pat
 df4 = df3[df3.los_icu >= 1]
 print(f"Removed {len(df3) - len(df4)} stays with less than 1 day in ICU")
 demo4 = print_demo(get_demography(df4))
-print(f"{len(df3)} stays with sepsis, lactate day 1, and LoS > 1 day \n({demo4})\n")
+print(f"{len(df4)} stays with sepsis, lactate day 1, and LoS > 1 day \n({demo4})\n")
 
 outdir = os.path.join(PROJ_PATH, 'data', 'cohorts')
 os.makedirs(outdir, exist_ok=True)

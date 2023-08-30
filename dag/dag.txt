@@ -2,9 +2,10 @@ dag {
 "Admit Type" [pos="-0.887,-0.040"]
 "English Proficiency" [exposure,pos="0.378,0.346"]
 "Fluid Volume norm LOS" [pos="-0.261,-0.185"]
-"Lab Values yes/no" [pos="0.163,-0.176"]
+"Insurance type" [pos="-0.506,0.070"]
 "Lactate Measurement" [outcome,pos="0.461,-0.064"]
 Biliary [pos="-1.130,0.099"]
+Demographics [pos="-0.141,0.033"]
 Infection [pos="-0.664,0.031"]
 Pneumonia [pos="-1.094,0.186"]
 Race [exposure,pos="-0.071,0.396"]
@@ -15,18 +16,18 @@ sex [exposure,pos="-0.545,0.332"]
 skin [pos="-0.650,0.212"]
 uti [pos="-0.856,0.219"]
 "Admit Type" -> SOFA
-"English Proficiency" -> SOFA
+"English Proficiency" -> Demographics
 "Fluid Volume norm LOS" -> SOFA
-"Lab Values yes/no" -> "Lactate Measurement"
-"Lab Values yes/no" <-> SOFA
+"Insurance type" -> Demographics
 Biliary -> Infection
+Demographics -> SOFA
 Infection -> SOFA
 Pneumonia -> Infection
-Race -> SOFA
+Race -> Demographics
 SOFA -> "Lactate Measurement"
 age -> charlson_ci
 charlson_ci -> SOFA
-sex -> SOFA
+sex -> Demographics
 skin -> Infection
 uti -> Infection
 }

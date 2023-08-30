@@ -1,0 +1,9 @@
+Axis,Demographic,OR,2.50%,97.50%,N
+race_group,White,1.00,1.00,1.00,16098
+race_group,Black,1.21,1.17,1.24,2052
+race_group,Asian,1.09,1.05,1.14,665
+race_group,Hispanic,1.06,1.03,1.15,820
+gender,M,1.00,1.00,1.00,11263
+gender,F,1.06,1.04,1.08,8372
+language,ENGLISH,1.00,1.00,1.00,17732
+language,No English,1.00,0.98,1.04,1903

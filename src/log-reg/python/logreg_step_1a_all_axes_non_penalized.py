@@ -5,7 +5,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import StratifiedKFold
 
 # Read confounder from txt
-with open("config/confounders.txt", "r") as f:
+with open("config/some_confounders.txt", "r") as f:
     confounders = f.read().splitlines()
 confounders.remove("confounder")
 
@@ -20,7 +20,7 @@ data = pd.read_csv("data/cohorts/cohort_MIMIC_entire_los.csv")
 # Create dataframe to store results
 results_df = pd.DataFrame(columns=["Axis", "Demographic","OR","2.5%","97.5%", "N"])
 
-setting = "logreg_lactate_measurement"
+setting = "logreg_lactate_measurement_non_penalized"
 
 # Iterating through the three axes values
 for a in axes:
@@ -80,6 +80,8 @@ for a in axes:
         col='race_group'
         if col in X.columns:
             X.drop(col, axis=1, inplace=True)
+
+        #print(X.columns)
             
         y = subset_data['lactate_day1_yes_no']
 
@@ -104,7 +106,7 @@ for a in axes:
             y_train, y_test = y.iloc[train_index], y.iloc[test_index]
 
             # Fit logistic regression model
-            model = LogisticRegression(max_iter=10000)
+            model = LogisticRegression(max_iter=10000, penalty=None)
             model.fit(X_test, y_test)
 
             idx = X_test.columns.get_loc(val)
@@ -134,6 +136,5 @@ for a in axes:
                                                           "97.5%": [CI_upper],
                                                           "N": [len(data[data[val]==1])]})], 
                                                           ignore_index=True)
-
 # Save results 
 results_df.to_csv(f"results/models/{setting}.csv", index=False)
