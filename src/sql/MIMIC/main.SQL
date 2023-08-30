@@ -40,12 +40,11 @@ lac_2 AS (
   FROM lac
   WHERE day = 2
   GROUP BY stay_id
-)
+),
 
 lac_whole AS (
 
   SELECT 
-
     stay_id
   , COUNT(valuenum) AS lactate_freq_whole
 
@@ -148,6 +147,7 @@ SELECT
   , lac_2.lactate_day2
   , lac_2.lactate_freq_day2
   , lac_whole.lactate_freq_whole
+
 
 -- illness severity - admission
   , sf.SOFA
@@ -326,6 +326,10 @@ ON lac_1.stay_id = icu.stay_id
 LEFT JOIN lac_2
 AS lac_2
 ON lac_2.stay_id = icu.stay_id
+
+LEFT JOIN lac_whole
+AS lac_whole
+ON lac_whole.stay_id = icu.stay_id
 
 left join `physionet-data.mimiciv_hosp.patients` as pat
 on icu.subject_id = pat.subject_id
