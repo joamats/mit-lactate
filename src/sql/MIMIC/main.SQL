@@ -42,6 +42,17 @@ lac_2 AS (
   GROUP BY stay_id
 )
 
+lac_whole AS (
+
+  SELECT 
+
+    stay_id
+  , COUNT(valuenum) AS lactate_freq_whole
+
+  FROM lac
+  GROUP BY stay_id
+)
+
 , fio2_table AS (
 
   SELECT
@@ -136,6 +147,7 @@ SELECT
   , lac_1.lactate_freq_day1
   , lac_2.lactate_day2
   , lac_2.lactate_freq_day2
+  , lac_whole.lactate_freq_whole
 
 -- illness severity - admission
   , sf.SOFA
