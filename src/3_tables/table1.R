@@ -147,13 +147,13 @@ render.strat <- function (label, n, ...) {
 }
 
 # Create Table1 Object
-tbl1 <- table1(~ sex_female + admission_age+binary_race + SOFA + charlson_comorbidity_index +
+tbl1 <- table1(~ sex_female + admission_age + eng_prof + SOFA + charlson_comorbidity_index +
                  lactate_day1 + lactate_day2 + lactate_freq_day1 + lactate_freq_day2 +
-                 los_icu + hemoglobin_min +
+                 los_icu + insurance + adm_elective + major_surgery
                  mech_vent_overall +
                  rrt_overall +
-                 vasopressor_overall + transfusion_overall +
-                fluids_volume 
+                 vasopressor_overall +
+                  fluids_volume 
                | binary_race,
                data=df,
                render.missing=NULL,
@@ -165,4 +165,4 @@ tbl1 <- table1(~ sex_female + admission_age+binary_race + SOFA + charlson_comorb
 
 
 # Convert to flextable
-t1flex(tbl1) %>% save_as_docx(path="results/table1/MIMIC_race_group.docx")
+t1flex(tbl1) %>% save_as_docx(path="results/table1/MIMIC_lactate.docx")
