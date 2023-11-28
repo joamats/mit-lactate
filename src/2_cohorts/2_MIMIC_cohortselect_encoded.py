@@ -160,7 +160,7 @@ df5["lactate_freq_LOS"].fillna(
 print(f"df5 length after confounder imputation {len(df5)}")
 
 # Saving cohort for all records after exclusion criteria is applied
-df5.to_csv(os.path.join(root_dir, "data/cohorts", "cohort_MIMIC_entire_los1.csv"))
+df5.to_csv(os.path.join(root_dir, "data/cohorts", "cohort_MIMIC_entire_los.csv"))
 
 # Removing patients without a lactate day 1 value
 df6 = df5[~df5.lactate_day1.isnull()]
@@ -169,4 +169,4 @@ demo6 = print_demo(get_demography(df3))
 print(f"{len(df6)} stays with sepsis and lactate day 1 \n({demo6})\n")
 
 # Saving cohort for all records after removing missing lactate day 1 values
-df6.to_csv(os.path.join(root_dir, "data/cohorts", "cohort_MIMIC_lac11.csv"))
+df6.to_csv(os.path.join(root_dir, "data/cohorts", "cohort_MIMIC_lac1.csv"))
