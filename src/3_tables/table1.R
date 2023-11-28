@@ -15,6 +15,12 @@ label(df$sex_female) <- "Sex"
 label(df$admission_age) <- "Age overall"
 units(df$admission_age) <- "years"
 
+df$eng_prof <- factor(df$eng_prof, levels=c(1,0), labels=c("Yes", "No"))
+label(df$eng_prof) <- "English proficiency"
+
+df$insurance <- factor(df$insurance, levels=c("Medicare", "Medicaid", "Other"), labels=c("Medicare", "Medicaid", "Other"))
+label(df$insurance) <- "Insurance"
+
 
 #df$age_ranges <- df$admission_age
 #df$age_ranges[df$admission_age >= 18 & df$admission_age <= 44] <- "18 - 44"
@@ -147,16 +153,15 @@ render.strat <- function (label, n, ...) {
 }
 
 # Create Table1 Object
-tbl1 <- table1(~ sex_female + admission_age + eng_prof + SOFA + charlson_comorbidity_index +
+tbl1 <- table1(~ sex_female + admission_age + eng_prof + insurance + SOFA + charlson_comorbidity_index +
                  lactate_day1 + lactate_day2 + lactate_freq_day1 + lactate_freq_day2 +
-                 los_icu + insurance + adm_elective + major_surgery
+                 los_icu + insurance + adm_elective + major_surgery +
                  mech_vent_overall +
                  rrt_overall +
                  vasopressor_overall +
                   fluids_volume 
                | binary_race,
                data=df,
-               render.missing=NULL,
                topclass="Rtable1-grid Rtable1-shade Rtable1-times",
                render.categorical=render.categorical,
                render.strat=render.strat, 
