@@ -1,26 +1,17 @@
 index,IRR,Lower_CI_exp,Upper_CI_exp
-admission_age,0.99,0.99,0.99
-sex_female,0.98,0.94,1.03
-eng_prof,0.86,0.8,0.92
-private_insurance,0.96,0.91,1.0
-adm_elective,1.39,1.3,1.48
-major_surgery,1.39,1.32,1.47
-charlson_comorbidity_index,1.01,1.0,1.03
-SOFA,1.09,1.08,1.09
-hypertension_present,1.02,0.97,1.07
-heart_failure_present,1.11,1.05,1.17
-copd_present,0.98,0.93,1.03
-asthma_present,0.89,0.73,1.1
-cad_present,1.26,1.2,1.32
-ckd_stages,0.98,0.96,0.99
+Intercept,0.72,0.62,0.85
+admission_age,1.0,1.0,1.0
+Black,1.01,0.94,1.09
+Asian,1.08,0.95,1.23
+Hispanic,1.12,0.99,1.26
+sex_female,0.94,0.9,0.98
+eng_prof,1.06,0.97,1.16
+private_insurance,1.07,1.02,1.12
+adm_elective,1.7,1.61,1.81
+charlson_comorbidity_index,1.01,1.0,1.02
+SOFA,1.1,1.09,1.1
 fluids_volume_norm_by_los_icu,1.0,1.0,1.0
-pneumonia,0.95,0.85,1.06
-uti,0.73,0.56,0.96
-biliary,1.14,0.77,1.68
-skin,0.77,0.44,1.33
-Asian,0.95,0.84,1.08
-Black,1.06,0.99,1.14
-Hispanic,0.93,0.83,1.04
-2011 - 2013,1.1,1.04,1.17
-2014 - 2016,1.22,1.15,1.3
-2017 - 2019,1.34,1.25,1.43
+pneumonia,1.01,0.9,1.13
+uti,0.68,0.5,0.93
+biliary,1.22,0.81,1.84
+skin,1.03,0.61,1.72
