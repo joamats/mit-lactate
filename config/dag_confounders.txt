@@ -1,0 +1,14 @@
+confounder
+admission_age
+race_group
+sex_female
+eng_prof
+private_insurance
+adm_elective
+charlson_comorbidity_index
+SOFA
+fluids_volume_norm_by_los_icu
+pneumonia
+uti
+biliary
+skin
