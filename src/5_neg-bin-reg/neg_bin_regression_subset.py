@@ -26,35 +26,50 @@ confounders.remove("confounder")
 df = pd.read_csv('data/cohorts/cohort_MIMIC_entire_los.csv')
 df.head()
 
+
 df.fillna(0, inplace=True)
-print(df.isna().sum())
+#print(df.isna().sum())
 
 df['lactate_freq_normalized']=df['lactate_freq_whole']/df['los_icu'] # move to cohort selection
 df_sub = df[df['lactate_freq_normalized']<10]
 
-X = df_sub[confounders]
 
-y = df_sub['lactate_freq_normalized']
+#X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
+#print('Training data set length=' + str(len(X_train)))
+#print('Testing data set length=' + str(len(X_test)))
 
+
+split_index = int(len(df_sub) * 0.7)  # 80% for training, 20% for testing
+
+df_train = df_sub[:split_index]
+df_test = df_sub[split_index:]
+print('Training data set length=' + str(len(df_train)))
+print('Testing data set length=' + str(len(df_test)))
 
 #One-hot encoding all categorical columns
-categorical_col= ['race_group', 'anchor_year_group']
+categorical_col= ['race_group']
 for col in categorical_col:
-    X = pd.concat([X.drop(col, axis=1), pd.get_dummies(X[col], dtype=int)], axis=1)
+    df_train = pd.concat([df_train.drop(col, axis=1), pd.get_dummies(df_train[col], dtype=int)], axis=1)
+    df_test = pd.concat([df_test.drop(col, axis=1), pd.get_dummies(df_test[col], dtype=int)], axis=1)
+
+print(df_train.columns)
+
+expr = 'lactate_freq_normalized ~ admission_age + Black + Asian + Hispanic + sex_female + eng_prof + private_insurance + adm_elective + charlson_comorbidity_index + SOFA + fluids_volume_norm_by_los_icu + pneumonia + uti + biliary + skin'
+
+y_train, X_train = dmatrices(expr, df_train, return_type='dataframe')
+y_test, X_test = dmatrices(expr, df_test, return_type='dataframe')
 
 # Removing the reference columns    
-X.drop('White', axis=1, inplace=True)
-X.drop('2008 - 2010', axis=1, inplace=True)
+#X_train.drop('race_group[T.White]', axis=1, inplace=True)
+#X_test.drop('race_group[T.White]', axis=1, inplace=True)
+#X.drop('2008 - 2010', axis=1, inplace=True)
 
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
-
-print('Training data set length=' + str(len(X_train)))
-print('Testing data set length=' + str(len(X_test)))
 
 # Creating the Negative Binomial model
 nb_training_results = sm.GLM(y_train, X_train, family = sm.families.NegativeBinomial(alpha = 1)).fit()
 
 print(nb_training_results.summary())
+print(nb_training_results.params)
 
 
 # Extract coefficient names and values
