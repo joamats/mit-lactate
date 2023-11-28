@@ -18,7 +18,7 @@ script_dir = os.path.dirname(__file__)
 root_dir = os.path.abspath(os.path.join(script_dir, os.pardir, os.pardir))
 
 # Read confounders from list in txt
-with open("config/some_confounders.txt", "r") as f:
+with open("config/dag_confounders.txt", "r") as f:
     confounders = f.read().splitlines()
 confounders.remove("confounder")
 
