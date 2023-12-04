@@ -26,9 +26,7 @@ confounders.remove("confounder")
 df = pd.read_csv("data/cohorts/cohort_MIMIC_entire_los.csv")
 df.head()
 
-
 df.fillna(0, inplace=True)
-# print(df.isna().sum())
 
 df["lactate_freq_normalized"] = (
     df["lactate_freq_whole"] / df["los_icu"]
@@ -36,12 +34,7 @@ df["lactate_freq_normalized"] = (
 df_sub = df[df["lactate_freq_normalized"] < 10]
 
 
-# X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
-# print('Training data set length=' + str(len(X_train)))
-# print('Testing data set length=' + str(len(X_test)))
-
-
-split_index = int(len(df_sub) * 0.7)  # 80% for training, 20% for testing
+split_index = int(len(df_sub) * 0.8)  # 80% for training, 20% for testing
 
 df_train = df_sub[:split_index]
 df_test = df_sub[split_index:]
