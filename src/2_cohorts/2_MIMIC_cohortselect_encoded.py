@@ -12,6 +12,8 @@ root_dir = os.path.abspath(os.path.join(script_dir, os.pardir, os.pardir))
 
 # Reading the MIMIC data
 df0 = pd.read_csv(os.path.join(root_dir, "data", "MIMIC_data.csv"))
+demo0 = print_demo(get_demography(df0))
+print(f"\n({demo0})\n")
 
 # Removing non-septic patients
 print(len(df0), "Initial rows in extracted MIMIC\n")

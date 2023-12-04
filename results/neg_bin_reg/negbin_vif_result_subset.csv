@@ -1,6 +1,25 @@
 Feature,VIF
+<<<<<<< HEAD
 Intercept,23.8
 major_surgery,1.02
 admission_age,1.01
 SOFA,1.02
 sex_female,1.02
+=======
+Intercept,49.97
+admission_age,1.61
+Black,1.05
+Asian,1.18
+Hispanic,1.23
+sex_female,1.03
+eng_prof,1.36
+private_insurance,1.14
+adm_elective,1.07
+charlson_comorbidity_index,1.5
+SOFA,1.06
+fluids_volume_norm_by_los_icu,1.06
+pneumonia,1.01
+uti,1.01
+biliary,1.0
+skin,1.0
+>>>>>>> refs/remotes/origin/master

@@ -1,6 +1,25 @@
 index,IRR,Lower_CI_exp,Upper_CI_exp
+<<<<<<< HEAD
 Intercept,0.74,0.66,0.83
 major_surgery,1.57,1.5,1.64
 admission_age,1.0,1.0,1.0
 SOFA,1.1,1.09,1.11
 sex_female,0.95,0.91,1.0
+=======
+Intercept,0.72,0.62,0.85
+admission_age,1.0,1.0,1.0
+Black,1.01,0.94,1.09
+Asian,1.08,0.95,1.23
+Hispanic,1.12,0.99,1.26
+sex_female,0.94,0.9,0.98
+eng_prof,1.06,0.97,1.16
+private_insurance,1.07,1.02,1.12
+adm_elective,1.7,1.61,1.81
+charlson_comorbidity_index,1.01,1.0,1.02
+SOFA,1.1,1.09,1.1
+fluids_volume_norm_by_los_icu,1.0,1.0,1.0
+pneumonia,1.01,0.9,1.13
+uti,0.68,0.5,0.93
+biliary,1.22,0.81,1.84
+skin,1.03,0.61,1.72
+>>>>>>> refs/remotes/origin/master
