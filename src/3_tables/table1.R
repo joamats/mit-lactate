@@ -21,17 +21,6 @@ label(df$eng_prof) <- "English proficiency"
 df$insurance <- factor(df$insurance, levels=c("Medicare", "Medicaid", "Other"), labels=c("Medicare", "Medicaid", "Other"))
 label(df$insurance) <- "Insurance"
 
-
-#df$age_ranges <- df$admission_age
-#df$age_ranges[df$admission_age >= 18 & df$admission_age <= 44] <- "18 - 44"
-#df$age_ranges[df$admission_age >= 45 & df$admission_age <= 64] <- "45 - 64"
-#df$age_ranges[df$admission_age >= 65 & df$admission_age <= 74] <- "65 - 74"
-#df$age_ranges[df$admission_age >= 75 & df$admission_age <= 84] <- "75 - 84"
-#df$age_ranges[df$admission_age >= 85] <- "85 and higher"
-
-#label(df$age_ranges) <- "Age by group"
-#units(df$age_ranges) <- "years"
-
 # new race column
 df$binary_race <- ifelse(df$race_group == "White", "White", "Non-white")
 
@@ -40,37 +29,12 @@ df$binary_race <- factor(df$binary_race, levels = c("White", "Non-white"),
                         labels = c("White", "Non-white"))
 label(df$binary_race) <- "Race Group"
 
-# # Year
-# df$year <- factor(df$year, levels = c('2014', '2015'),
-#                   labels = c('2014', '2015'))
-# label(df$year) <- "Year of Admission"
-
-# Admission SOFA
-#df$SOFA_ranges <- factor(df$SOFA_ranges, levels = c('0-3', '4-6', '7-10', '>10'),
-#                         labels = c('0 - 3', '4 - 6','7 - 10', '11 and above'))
-
 label(df$SOFA) <- "SOFA"
-# label(df$SOFA_ranges) <- "SOFA Ranges"
-
-# Comorbidites
-# df$CCI_ranges <- factor(df$CCI_ranges, levels = c('0-3', '4-6', '7-10', '>10'),
-#                         labels = c('0 - 3', '4 - 6', '7 - 10', '11 and above'))
 
 label(df$charlson_comorbidity_index) <- "Charlson Comorbidity Index (CCI)"
-# label(df$CCI_ranges) <- "CCI Ranges"
 
-#df$cirrhosis_present <- factor(df$cirrhosis_present, levels = c(0, 1), 
-#                               labels = c('Cirrhosis absent', 'Cirrhosis present'))
-
-# label(df$cirrhosis_present) <- "Cirrhosis"
-
-# df$heart_failure_present <- factor(df$heart_failure_present, levels = c(0, 1), 
-#                                    labels = c('CHF absent', 'CHF present'))
-
-# label(df$heart_failure_present) <- "Congestive Heart Failure (CHF)"
-
-# df <- within(df, ckd_stages <- factor(ckd_stages, levels = c(0, 1, 2, 3, 4, 5)))
-# df <- within(df, ckd_stages <- fct_collapse(ckd_stages, Absent=c("0", "1", "2"), Present=c("3", "4", "5")))
+df$adm_elective <- factor(df$adm_elective, levels = c(0, 1), 
+              labels = c('Emergency admission', 'Elective admission'))
 
 # label(df$ckd_stages) <- "CKD"
 
@@ -79,13 +43,13 @@ label(df$weight_admit) <- "Weight"
 units(df$weight_admit) <- "kg"
 
 # Lactate
-label(df$lactate_day1) <- "Lactate Day 1"
+label(df$lactate_day1) <- "Lactate day 1"
 units(df$lactate_day1) <- "mmol/L"
-label(df$lactate_freq_day1) <- "No. of Lactate Measurements Day 1"
+label(df$lactate_freq_day1) <- "Number of lactate measurements day 1"
 
-label(df$lactate_day2) <- "Lactate Day 2"
+label(df$lactate_day2) <- "Lactate day 2"
 units(df$lactate_day2) <- "mmol/L"
-label(df$lactate_freq_day2) <- "No. Measurements of Lactate in Day 2"
+label(df$lactate_freq_day2) <- "Number of lactate measurements day 2"
 
 # Hemoglobin
 label(df$hemoglobin_min) <- "Min. Hemoglobin (entire stay)"
@@ -116,17 +80,8 @@ df$vasopressor_overall <- factor(df$vasopressor_overall, levels=c(1,0), labels=c
 label(df$vasopressor_overall) <- "Vasopressor(s)"
 
 # Blood Transfusion
-# df$transfusion_overall_yes <- factor(df$transfusion_overall_yes, levels=c(1,0), labels=c("Received", "Not received"))
-# label(df$transfusion_overall_yes) <- "Blood Transfusion (entire stay)"
-
 df$transfusion_overall <- factor(df$transfusion_overall, levels=c(1,0), labels=c("Received", "Not received"))
 label(df$transfusion_overall) <- "Blood Transfusion (first 2 days)"
-
-# label(df$transfusion_units_day1) <- "Volume of Blood received (day 1)"
-# units(df$transfusion_units_day1) <- "mL"
-
-# # label(df$transfusion_units_day2) <- "Volume of Blood received (day 2)"
-# units(df$transfusion_units_day2) <- "mL"
 
 # Fluids
 #df$fluids_overall_yes <- factor(df$fluids_overall_yes, levels=c(1,0), labels=c("Received", "Not received"))
@@ -159,7 +114,7 @@ tbl1 <- table1(~ sex_female + admission_age + eng_prof + insurance + SOFA + char
                  mech_vent_overall +
                  rrt_overall +
                  vasopressor_overall +
-                  fluids_volume 
+                 fluids_volume 
                | binary_race,
                data=df,
                topclass="Rtable1-grid Rtable1-shade Rtable1-times",
