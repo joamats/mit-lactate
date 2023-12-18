@@ -75,14 +75,22 @@ lac_whole AS (
       ce.stay_id
     , SUM(amount) AS fluids_volume
     , SUM(amount)/MAX(icu.los_icu) AS fluids_volume_norm_by_los_icu
+    , SUM(
+      CASE WHEN icu.los_icu <= 2 THEN amount
+      ELSE NULL
+      END) AS fluids_volume_d1_2
     , MAX(icu.los_icu) AS los_icu
 
-    FROM  `physionet-data.mimiciv_icu.inputevents` ce
+    FROM `physionet-data.mimiciv_icu.inputevents` ce
 
     LEFT JOIN `db_name.mimiciv_derived.icustay_detail` icu
     ON icu.stay_id = ce.stay_id
+    
+    WHERE itemid IN 
+    (220949, 220950, 220952,225158, 225159,225823, 225825,225827, 225828,225941, 226089,226361,226364,226365, 227533,225161,228140,228141,228142,220865,220951,220953,
+    220975,220977,220979,220980,221000,221001,221002,221003,221014,221017,221211, 220954,220955,220956,220958,220959,220960,220961,220962,220963,220964,220965,220966,
+    220967,220968,221212,221213,220861,220863)
 
-    WHERE itemid IN (220952,225158,220954,220955,220958,220960,220961,220962,221212,221213,220861,220863)
     AND amount is NOT NULL
     AND amount > 0 
     AND icu.los_icu > 0
@@ -163,6 +171,7 @@ SELECT
 -- treatments
   , fluids_volume
   , fluids_volume_norm_by_los_icu
+  , fluids_volume_d1_2
   , CASE WHEN (transfusion_yes IS NOT NULL) THEN transfusion_yes ELSE 0 END AS transfusion_overall
   , CASE WHEN (insulin_yes IS NOT NULL) THEN insulin_yes ELSE 0 END AS insulin_overall
   , InvasiveVent.InvasiveVent_hr
