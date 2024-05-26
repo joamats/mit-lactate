@@ -1,9 +1,0 @@
-Demographic,OR,2.50% CI,97.5% CI
-White,Reference,,
-Black,1.11,1.09,1.13
-Asian,0.95,0.89,0.99
-Hispanic,0.9,0.84,0.97
-Male Sex,Reference,,
-Female Sex,0.99,0.97,0.99
-Not English proficient,Reference,,
-English proficient,1,1,1
