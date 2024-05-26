@@ -1,0 +1,20 @@
+Variable,IRR,2.5% CI,97.5% CI
+Intercept,0.72,0.62,0.85
+Age,1,1,1
+Charlson comorbidity index,1.01,1,1.02
+SOFA,1.1,1.09,1.1
+Race:,,,
+White,Reference,,
+Asian,1.08,0.95,1.23
+Black,1.01,0.94,1.09
+Hispanic,1.12,0.99,1.26
+Binary variables:,,,
+Female sex,0.94,0.9,0.98
+English proficient,1.06,0.97,1.16
+Private insurance,1.07,1.02,1.12
+Elective admission,1.7,1.61,1.81
+Volume of fluids normalized by LOS,1,1,1
+Pneumonia,1.01,0.9,1.13
+Urinary tract infection,0.68,0.5,0.93
+Biliary infection,1.22,0.81,1.84
+Skin infection,1.03,0.61,1.72
