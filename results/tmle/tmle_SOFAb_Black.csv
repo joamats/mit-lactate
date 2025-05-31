@@ -1,0 +1,2 @@
+,outcome,tx_demographic,OR,i_ci,s_ci,pvalue,n,SL_libraries,Q_weights,g_weights
+1,lactate_day1_yes_no,Black,1.21,0.97,1.49,0.085735899,8373,SL.glm SL.mean,0.915156754585648 0.0848432454143521,0.914928151437426 0.0850718485625742

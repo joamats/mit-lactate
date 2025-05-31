@@ -1,0 +1,17 @@
+index,IRR,Lower_CI_exp,Upper_CI_exp
+Intercept,0.53,0.42,0.66
+admission_age,1.0,1.0,1.0
+Black,0.97,0.89,1.07
+Asian,1.08,0.91,1.28
+Hispanic,1.09,0.92,1.28
+sex_female,0.99,0.93,1.05
+eng_prof,1.09,0.97,1.23
+private_insurance,1.08,1.01,1.15
+adm_elective,1.32,1.21,1.44
+charlson_comorbidity_index,1.03,1.02,1.04
+SOFA,1.07,1.06,1.08
+fluids_volume_norm_by_los_icu,1.0,1.0,1.0
+pneumonia,1.07,0.93,1.23
+uti,0.97,0.58,1.62
+biliary,1.16,0.68,1.97
+skin,1.39,0.27,7.22

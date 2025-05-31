@@ -1,0 +1,2 @@
+,outcome,tx_demographic,OR,i_ci,s_ci,pvalue,n,SL_libraries,Q_weights,g_weights
+1,lactate_day1_yes_no,No English,0.93,0.81,1.07,0.315481705,10568,SL.glm SL.mean,0.974881595314961 0.0251184046850391,0.98486315289648 0.0151368471035201

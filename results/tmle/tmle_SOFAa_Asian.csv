@@ -1,0 +1,2 @@
+,outcome,tx_demographic,OR,i_ci,s_ci,pvalue,n,SL_libraries,Q_weights,g_weights
+1,lactate_day1_yes_no,Asian,1.12,0.96,1.31,0.140809641,9094,SL.glm SL.mean,0.969646801374259 0.0303531986257412,0.75566861129227 0.24433138870773
